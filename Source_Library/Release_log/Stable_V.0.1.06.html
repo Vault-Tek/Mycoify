@@ -373,7 +373,6 @@ let summaryDropdownOpen = false;
 let lastTab = null;
 
 function toggleSummaryDropdown(force) {
-  // If force is true, always close. If false, always open. If undefined, toggle.
   if (typeof force === "boolean") {
     summaryDropdownOpen = !force ? true : false;
   } else {
@@ -433,16 +432,14 @@ function showTabSummary(tab, forceClosed = true) {
     return;
   }
   content.innerHTML = html;
-
-  // Always close summary when switching tab or forceClosed is true.
   summaryDropdownOpen = false;
-  toggleSummaryDropdown(true); // always closed after tab switch or data change
+  toggleSummaryDropdown(true);
   lastTab = tab;
 }
 
 function updateSummaryLive() {
   let visibleTab = getCurrentTab();
-  showTabSummary(visibleTab, true); // always closed unless user opens
+  showTabSummary(visibleTab, true);
 }
 function getCurrentTab() {
   for (let t of ['inventory','runs','colonizing','fruiting','mushrooms','offloads']) {
@@ -657,23 +654,29 @@ function renderRunSuppliesTable() {
 }
 function addRun() {
   const name = document.getElementById('runName').value.trim();
-  const mushroomsMade = +document.getElementById('runUsed').value.trim().replace(",", ".");
-  if (!name || mushroomsMade <= 0) return showNotification('Invalid run', true);
+  let mushroomsMade = document.getElementById('runUsed').value.trim().replace(",", ".");
+  mushroomsMade = mushroomsMade === "" ? 0 : +mushroomsMade;
+  if (!name || isNaN(mushroomsMade) || mushroomsMade < 0) return showNotification('Invalid run', true);
   let suppliesUsed = [];
   let totalCost = 0;
+  let atLeastOneSupply = false;
   data.supplies.forEach((s, i) => {
     if (s.deleted) {
       suppliesUsed[i] = 0;
       return;
     }
-    let use = +document.getElementById('runSupplyUse'+i).value.trim().replace(",", ".") || 0;
+    let val = document.getElementById('runSupplyUse'+i);
+    let use = val && val.value ? +val.value.trim().replace(",", ".") : 0;
+    if (isNaN(use) || use < 0) use = 0;
     if (use > s.qty) use = s.qty;
     suppliesUsed[i] = use;
     if (use > 0) {
       totalCost += use * s.unitCost;
       s.qty -= use;
+      atLeastOneSupply = true;
     }
   });
+  if (!(atLeastOneSupply || mushroomsMade > 0)) return showNotification('Invalid run', true);
   data.expenses += totalCost;
   data.runs.push({ name, time: Date.now(), suppliesUsed, mushroomsMade, totalCost, deleted: false });
   data.mushrooms += mushroomsMade;
@@ -761,11 +764,143 @@ function renderColonizing() {
     table.appendChild(tr);
   });
 }
-function updateNextTubId() {
-  // Optional: Could auto-increment tub IDs for new entries if you want
+function updateNextTubId() {}
+
+/* ---------- FRUITING TAB LOGIC WITH FLUSH MODAL ---------- */
+function renderFruiting() {
+  const table = document.getElementById('fruitingTable');
+  table.innerHTML = '';
+  data.fruiting.forEach((f, i) => {
+    if (f.deleted) return;
+    let flushArr = (data.tubFlushes && data.tubFlushes[f.tubId]) ? data.tubFlushes[f.tubId].filter(x => !x.dump) : [];
+    let isFirstFlushZero = flushArr.length === 1 && flushArr[0].grams === 0;
+    let flushes = flushArr.length;
+    let displayFlush = isFirstFlushZero ? '1st' : ordinal(flushes + 1);
+    let lastFlush = isFirstFlushZero ? '-' : (flushes > 0 ? ordinal(flushes) : '-');
+    table.innerHTML += `<tr>
+      <td class="p-2">${f.tubId}</td>
+      <td class="p-2">${f.species}</td>
+      <td class="p-2">${f.fruitingDate}</td>
+      <td class="p-2">${displayFlush} (last: ${lastFlush})</td>
+      <td class="p-2">
+        <button class="btn" onclick="openFruitModal(${i})">Log Fruit / Flush</button>
+      </td>
+    </tr>`;
+  });
+}
+function openFruitModal(idx) {
+  const tub = data.fruiting[idx];
+  if (!tub || tub.deleted) return;
+  let flushArr = data.tubFlushes[tub.tubId] || [];
+  let flushHistoryHtml = '';
+  if (flushArr.length > 0) {
+    flushHistoryHtml = '<div class="mb-3"><b>Flush history:</b><ul class="list-disc pl-5">';
+    flushArr.forEach(f => {
+      if (f.dump) {
+        flushHistoryHtml += `<li><span class="text-red-400">Tub dumped on ${f.date}</span></li>`;
+      } else {
+        flushHistoryHtml += `<li>${ordinal(f.flushNum)} flush, ${f.date}, ${f.grams}g</li>`;
+      }
+    });
+    flushHistoryHtml += '</ul></div>';
+  }
+  document.getElementById('fruitModalContent').innerHTML = `
+    <h2 class="text-lg font-bold mb-2">Log Flush for Tub <span class="text-blue-300">${tub.tubId}</span> (${tub.species})</h2>
+    ${flushHistoryHtml}
+    <form id="flushForm" onsubmit="event.preventDefault(); submitFlush(${idx});">
+      <div class="mb-2">
+        <label class="block mb-1">Flush number:</label>
+        <input class="input w-28" id="flushNum" type="text" pattern="\\d*" inputmode="numeric" value="${flushArr.length === 0 ? 1 : ''}" placeholder="e.g. 2" required>
+      </div>
+      <div class="mb-2">
+        <label class="block mb-1">Flush date:</label>
+        <input class="input w-44" type="date" id="flushDate" value="${(new Date()).toISOString().slice(0,10)}" required>
+      </div>
+      <div class="mb-2">
+        <label class="block mb-1">Harvested (g):</label>
+        <input class="input w-28" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" id="flushGrams" placeholder="0" required>
+      </div>
+      <div class="modal-btn-row">
+        <button type="submit" class="btn">Log Flush</button>
+        <button type="button" class="btn btn-danger" onclick="dumpTub(${idx})">Dump Tub</button>
+      </div>
+    </form>
+  `;
+  document.getElementById('fruitModalBg').classList.add('open');
+  document.getElementById('flushNum').focus();
+}
+function closeFruitModal() {
+  document.getElementById('fruitModalBg').classList.remove('open');
+  document.getElementById('fruitModalContent').innerHTML = '';
+}
+function submitFlush(idx) {
+  const tub = data.fruiting[idx];
+  if (!tub || tub.deleted) return;
+  const flushArr = data.tubFlushes[tub.tubId] = data.tubFlushes[tub.tubId] || [];
+  let flushNum = document.getElementById('flushNum').value.trim();
+  if (!flushNum) flushNum = flushArr.length + 1;
+  flushNum = +flushNum;
+  const date = document.getElementById('flushDate').value;
+  let grams = document.getElementById('flushGrams').value.trim().replace(",", ".");
+  grams = +grams;
+  if (!date || isNaN(grams) || grams <= 0 || isNaN(flushNum) || flushNum < 1) {
+    showNotification("Invalid flush entry", true); return;
+  }
+  flushArr.push({ flushNum, date, grams });
+  data.mushrooms += grams;
+  saveData();
+  updateDashboard();
+  renderFruiting();
+  updateMushroomTab && updateMushroomTab();
+  showNotification(`Logged ${ordinal(flushNum)} flush for tub ${tub.tubId}`);
+  closeFruitModal();
+}
+function dumpTub(idx) {
+  const tub = data.fruiting[idx];
+  if (!tub || tub.deleted) return;
+  data.tubFlushes[tub.tubId] = data.tubFlushes[tub.tubId] || [];
+  data.tubFlushes[tub.tubId].push({ dump: true, date: (new Date()).toISOString().slice(0,10) });
+  tub.harvested = true;
+  tub.harvestedDate = (new Date()).toISOString().slice(0,10);
+  data.harvestedTubs = data.harvestedTubs || [];
+  data.harvestedTubs.push({
+    tubId: tub.tubId,
+    species: tub.species,
+    fruitingDate: tub.fruitingDate,
+    harvestedDate: tub.harvestedDate,
+    status: "Dumped"
+  });
+  tub.deleted = true;
+  saveData();
+  renderFruiting();
+  showNotification('Tub dumped and removed');
+  closeFruitModal();
 }
 
-/* ---------- FRUITING TAB LOGIC ---------- */
+/* When moving a tub to fruiting, start its flush log at flush 1 */
+function addFruitingTub() {
+  const tubId = document.getElementById('fruitingTubId').value.trim();
+  const species = document.getElementById('fruitingSpecies').value.trim();
+  const fruitingDate = document.getElementById('fruitingHarvestDate').value.trim();
+  if (!tubId || !species || !fruitingDate) return showNotification('Invalid fruiting move', true);
+  // Remove from colonizing
+  let idx = data.colonizing.findIndex(t => t.tubId === tubId && !t.deleted);
+  if (idx !== -1) {
+    data.colonizing[idx].deleted = true;
+  }
+  // Add to fruiting
+  data.fruiting.push({ tubId, species, fruitingDate, deleted: false });
+  // Initialize flush log with flush #1
+  data.tubFlushes[tubId] = [{ flushNum: 1, date: fruitingDate, grams: 0 }];
+  saveData();
+  renderColonizing();
+  renderFruiting();
+  updateFruitingTubSelect();
+  document.getElementById('fruitingHarvestDate').value = '';
+  showNotification('Tub moved to fruiting (Flush 1 started)');
+  updateSummaryLive();
+}
+
 function updateFruitingTubSelect() {
   const sel = document.getElementById('fruitingTubId');
   if (!sel) return;
@@ -787,49 +922,6 @@ document.getElementById('fruitingTubId').addEventListener('change', function() {
   let t = data.colonizing.find(t => t.tubId === this.value && !t.deleted);
   document.getElementById('fruitingSpecies').value = t ? t.species : '';
 });
-function addFruitingTub() {
-  const tubId = document.getElementById('fruitingTubId').value.trim();
-  const species = document.getElementById('fruitingSpecies').value.trim();
-  const fruitingDate = document.getElementById('fruitingHarvestDate').value.trim();
-  if (!tubId || !species || !fruitingDate) return showNotification('Invalid fruiting move', true);
-  // Remove from colonizing
-  let idx = data.colonizing.findIndex(t => t.tubId === tubId && !t.deleted);
-  if (idx !== -1) {
-    data.colonizing[idx].deleted = true;
-  }
-  // Add to fruiting
-  data.fruiting.push({ tubId, species, fruitingDate, deleted: false });
-  saveData();
-  renderColonizing();
-  renderFruiting();
-  updateFruitingTubSelect();
-  document.getElementById('fruitingHarvestDate').value = '';
-  showNotification('Tub moved to fruiting');
-  updateSummaryLive();
-}
-function deleteFruitingTub(i) {
-  data.fruiting[i].deleted = true;
-  saveData();
-  renderFruiting();
-  showNotification('Fruiting tub deleted');
-  updateSummaryLive();
-}
-function renderFruiting() {
-  const table = document.getElementById('fruitingTable');
-  table.innerHTML = '';
-  data.fruiting.forEach((f, i) => {
-    if (f.deleted) return;
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="p-2">${f.tubId}</td>
-      <td class="p-2">${f.species}</td>
-      <td class="p-2">${f.fruitingDate}</td>
-      <td class="p-2"></td>
-      <td class="p-2"><button class="btn-danger" onclick="deleteFruitingTub(${i})">Delete</button></td>
-    `;
-    table.appendChild(tr);
-  });
-}
 
 /* ---------- MUSHROOMS TAB LOGIC ---------- */
 function updateMushroomTab() {
@@ -1106,6 +1198,14 @@ function parseLabLog(text) {
     }
   }
 }
+
+/* ---------- MODAL BG DISMISS & ESC CLOSE ---------- */
+document.getElementById('fruitModalBg').addEventListener('mousedown', function(e){
+  if (e.target === this) closeFruitModal();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === "Escape") closeFruitModal();
+});
 </script>
 </body>
 </html>
