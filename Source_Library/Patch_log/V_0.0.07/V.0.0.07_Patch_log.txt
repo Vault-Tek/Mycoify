@@ -1,0 +1,43 @@
+# Mycoify v0.0.07 – Patch Notes
+
+## ✨ New Features & Improvements
+
+### ⚗️ "ml" Unit Bulk Pricing Support
+- **Special handling for "ml" (milliliter) unit supplies:**
+  - When adding a supply with unit "ml", the **unit cost** is now calculated automatically from the total price entered divided by the quantity, so you can simply enter the total price you paid for all ml.
+  - The system will store and display the cost per ml (to 4 decimal places) and always show an accurate total cost.
+- **ML Usage Hint:**  
+  - When "ml" is entered in the unit field, a yellow hint appears:  
+    > "For ml: Enter the total price for all ml, not per ml!"
+  - This helps prevent confusion and ensures correct bulk entry for liquid supplies.
+
+### 🧑‍🔬 Inventory Add/Update
+- Inventory form now requires a positive quantity (no zero or negatives).
+- ml handling logic only applies to supplies where unit is exactly "ml" (case-insensitive).
+
+### 🪄 UI/UX Enhancements
+- The "ml" hint is context-aware and only appears when relevant.
+- Table now displays cost per unit to four decimal places for precise tracking of small units (e.g., $0.0034/ml).
+- All supply and run input validation maintained.
+
+### 📦 All Previous Features Retained
+- Interactive production run supply table, additive inventory, readable TXT import/export, offload/product tracking, and dashboard summaries remain unchanged.
+
+## 🛠️ Everything Else (from v0.0.06)
+- Supplies merge by name/unit, quantities add, cost/unit updates
+- Production runs: direct, table-driven usage input
+- Mushroom harvest, offload/sell, profit, and valuation
+- Human-readable TXT export/import
+- Local storage, responsive UI, notifications
+
+## 📝 Known Limitations (Unchanged)
+- Deleting a run or supply does not restore inventory/stock
+- No cloud/multi-user features
+- TXT import expects correct format—edit with care!
+
+---
+
+**Upgrade Note:**  
+When adding liquid supplies (ml), always enter the *total* price you paid for the quantity. The app will calculate per-ml automatically and display this for accuracy!
+
+---

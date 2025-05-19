@@ -1,0 +1,43 @@
+# Mycoify v0.0.02 – Patch Notes
+
+## ✨ What’s New & Changed
+
+### Production Runs: Mushrooms Produced Now Optional!
+- The “Mushrooms Produced (g)” field in Production Runs is now **optional**.  
+  - You can leave it blank, set it to zero, or enter a positive value.
+  - If left blank or set to zero, the run will still be recorded, but will not increase the mushroom stock.
+  - This is reflected in both the input form and the production runs table (displays "—" if not set).
+
+### Improved Production Run Validation
+- You can now create a run with zero mushrooms produced, as long as you enter a run name and valid supply usage.
+- The run entry form and validation logic now permit blank or zero mushroom values.
+
+### Production Run Table Display
+- The table in the “Production Runs” tab now shows "—" for runs where no mushrooms were produced (previously showed 0).
+- Ensures clearer distinction between no harvest and zero harvest.
+
+### Internal Code/Logic Adjustments
+- The `addRun` function now:
+  - Accepts, parses, and stores blank/zero mushroom entries.
+  - Only increments mushroom stock if the value is greater than zero.
+  - Maintains all other behavior (supply deduction, total cost, expense tracking).
+
+## 🛠️ Everything Else (Retained from 0.0.01)
+- Full inventory management (add/update/delete supplies, total cost tracking)
+- Production run logging with per-supply usage and cost deduction
+- Mushroom stock management, with harvests and stock valuation
+- Product offloading/selling, profit and income calculation
+- Local storage persistence, import/export tools
+- Responsive, dark-themed UI with notifications and real-time updates
+
+## 📝 Known Limitations (Unchanged)
+- Deleting a production run does not restore supply counts.
+- Data is still stored locally only—no cloud sync or multi-user support.
+- No advanced analytics or charting.
+
+---
+
+**Upgrade Note:**  
+If you previously had runs with 0 mushrooms, those will now be displayed as "—" in the Production Runs table for clarity.
+
+---

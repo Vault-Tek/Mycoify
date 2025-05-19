@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mycology Lab Spreadsheet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #111827; color: #fff; }
+    .card { background: #1F2937; border-radius: 1rem; box-shadow: 0 2px 8px #0003; }
+    .btn, .btn-secondary {
+      border-radius: 0.375rem; padding: 0.5rem 1rem; color: #fff; transition: background 0.2s;
+    }
+    .btn { background: #2563eb; }
+    .btn-secondary { background: #374151; }
+    .btn-danger { background: #dc2626; }
+    .input { background: #374151; color: #fff; border-radius: 0.375rem; padding: 0.5rem; }
+    .table-header { background: #111827; }
+    .notification {
+        position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+        background: #1F2937; color: #fff; padding: 1rem 2rem; border-radius: .5rem; display: none;
+        box-shadow: 0 2px 8px #0005; z-index: 1000;
+    }
+    input[type="number"].run-supply-input {
+      width: 70px;
+      background: #262f3f;
+      color: #fff;
+      border-radius: 0.375rem;
+      border: 1px solid #374151;
+      padding: 0.25rem 0.5rem;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center min-h-screen py-10">
+  <div id="notification" class="notification"></div>
+  <div class="w-full max-w-5xl card p-6 mb-6">
+    <h1 class="text-2xl font-bold mb-2 text-center">🍄 Mycology Lab Spreadsheet</h1>
+    <div class="flex flex-wrap gap-4 justify-center mb-4">
+      <div class="card p-4 flex-1 min-w-[220px]">
+        <div class="text-sm text-gray-400">Supplies in Inventory</div>
+        <div id="suppliesCount" class="text-xl font-semibold"></div>
+      </div>
+      <div class="card p-4 flex-1 min-w-[220px]">
+        <div class="text-sm text-gray-400">Mushroom Stock (g)</div>
+        <div id="mushroomStock" class="text-xl font-semibold"></div>
+        <div class="text-xs text-gray-400">Value: $<span id="mushroomValue"></span></div>
+      </div>
+      <div class="card p-4 flex-1 min-w-[220px]">
+        <div class="text-sm text-gray-400">Total Expenses</div>
+        <div id="totalExpenses" class="text-xl font-semibold"></div>
+      </div>
+      <div class="card p-4 flex-1 min-w-[220px]">
+        <div class="text-sm text-gray-400">Total Profit</div>
+        <div id="totalProfit" class="text-xl font-semibold"></div>
+      </div>
+    </div>
+    <div class="flex gap-4 justify-center flex-wrap">
+      <button id="btn-inventory" class="btn" onclick="showTab('inventory')">Inventory</button>
+      <button id="btn-runs" class="btn-secondary" onclick="showTab('runs')">Production Runs</button>
+      <button id="btn-mushrooms" class="btn-secondary" onclick="showTab('mushrooms')">Mushroom Stock</button>
+      <button id="btn-offloads" class="btn-secondary" onclick="showTab('offloads')">Offload Product</button>
+      <button class="btn-secondary" onclick="exportTextFile()">Export / Save</button>
+      <button class="btn-secondary" onclick="importTextFile()">Import / Load</button>
+    </div>
+  </div>
+
+  <!-- Inventory Tab -->
+  <div id="tab-inventory" class="w-full max-w-5xl card p-6 mb-6 hidden">
+    <h2 class="text-xl font-bold mb-4">Supplies Inventory</h2>
+    <form onsubmit="event.preventDefault(); addSupply();">
+      <div class="flex flex-wrap gap-4 mb-2">
+        <input id="supplyName" class="input flex-1" placeholder="Supply Name (e.g. Peat moss)">
+        <input id="supplyQty" class="input w-28" type="number" min="0" step="any" placeholder="Quantity to Add">
+        <input id="supplyUnit" class="input w-24" placeholder="Unit (e.g. bag, ml)">
+        <input id="supplyUnitCost" class="input w-32" type="number" min="0" step="any" placeholder="Cost per unit">
+        <button type="submit" class="btn">Add / Update</button>
+      </div>
+      <div class="text-xs text-gray-400 mb-2">If supply exists, quantity will be increased. Units and cost will be updated.</div>
+    </form>
+    <div class="overflow-x-auto">
+      <table class="w-full mt-4 text-left">
+        <thead>
+          <tr class="table-header">
+            <th class="p-2">Supply</th>
+            <th class="p-2">Quantity</th>
+            <th class="p-2">Unit</th>
+            <th class="p-2">Unit Cost</th>
+            <th class="p-2">Total Cost</th>
+            <th class="p-2"></th>
+          </tr>
+        </thead>
+        <tbody id="suppliesTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Runs Tab -->
+  <div id="tab-runs" class="w-full max-w-5xl card p-6 mb-6 hidden">
+    <h2 class="text-xl font-bold mb-4">Production Runs</h2>
+    <form id="runForm" onsubmit="event.preventDefault(); addRun();">
+      <div class="flex flex-wrap gap-4 mb-2">
+        <input id="runName" class="input flex-1" placeholder="Run Description (e.g. Substrate Batch)">
+        <input id="runUsed" class="input w-32" type="number" min="0" step="any" placeholder="Mushrooms Produced (g, optional)">
+      </div>
+      <div class="overflow-x-auto mt-3 mb-3">
+        <table class="w-full text-left">
+          <thead>
+            <tr class="table-header">
+              <th class="p-2">Supply</th>
+              <th class="p-2">Available</th>
+              <th class="p-2">Unit</th>
+              <th class="p-2">Use for this Run</th>
+            </tr>
+          </thead>
+          <tbody id="runSuppliesTable"></tbody>
+        </table>
+      </div>
+      <button type="submit" class="btn">Add Run</button>
+    </form>
+    <div class="overflow-x-auto">
+      <table class="w-full mt-4 text-left">
+        <thead>
+          <tr class="table-header">
+            <th class="p-2">Run</th>
+            <th class="p-2">Supplies Used</th>
+            <th class="p-2">Mushrooms Produced (g)</th>
+            <th class="p-2">Total Cost</th>
+            <th class="p-2"></th>
+          </tr>
+        </thead>
+        <tbody id="runsTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Mushrooms Tab -->
+  <div id="tab-mushrooms" class="w-full max-w-5xl card p-6 mb-6 hidden">
+    <h2 class="text-xl font-bold mb-4">Mushroom Stock</h2>
+    <form onsubmit="event.preventDefault(); addHarvest();">
+      <div class="flex flex-wrap gap-4 mb-2">
+        <input id="harvestQty" class="input w-32" type="number" min="0" step="any" placeholder="Harvest (g)">
+        <button type="submit" class="btn">Add Harvest</button>
+      </div>
+    </form>
+    <div class="mt-4">
+      <div class="text-lg">Total Stock: <span id="mushroomStockDetail"></span> g</div>
+      <div class="text-lg">Estimated Value: $<span id="mushroomValueDetail"></span></div>
+      <div class="flex items-center gap-2 mt-2 text-lg">
+        <label for="marketPrice" class="mb-0">Market Price: $</label>
+        <input id="marketPrice" type="number" min="0" step="any" class="input w-24" value="20" onchange="updateDashboard()">
+        <span>/ 3.5g</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offload Tab -->
+  <div id="tab-offloads" class="w-full max-w-5xl card p-6 mb-6 hidden">
+    <h2 class="text-xl font-bold mb-4">Offload Product</h2>
+    <form onsubmit="event.preventDefault(); offloadProduct();">
+      <div class="flex flex-wrap gap-4 mb-2">
+        <input id="offloadQty" class="input w-32" type="number" min="0" step="any" placeholder="Sell/Offload (g)">
+        <button type="submit" class="btn btn-danger">Offload</button>
+      </div>
+    </form>
+    <div class="mt-4">
+      <h3 class="text-lg mb-2">Recent Offloads</h3>
+      <ul id="offloadsList" class="list-disc ml-5"></ul>
+    </div>
+  </div>
+
+  <script>
+    // ========== Data Model ==========
+    let data = {
+      supplies: [],
+      runs: [],
+      mushrooms: 0,
+      offloads: [],
+      marketPrice: 20, // $ per 3.5g
+      expenses: 0,
+      income: 0
+    };
+
+    // ========== Local Storage ==========
+    function saveData() {
+      localStorage.setItem('mycologyLabData', JSON.stringify(data));
+    }
+    function loadData() {
+      const d = localStorage.getItem('mycologyLabData');
+      if (d) {
+        data = JSON.parse(d);
+      }
+      document.getElementById('marketPrice').value = data.marketPrice || 20;
+    }
+    loadData();
+
+    // ========== UI Functions ==========
+    function showNotification(msg, error = false) {
+      const n = document.getElementById('notification');
+      n.textContent = msg;
+      n.style.background = error ? '#dc2626' : '#1F2937';
+      n.style.display = 'block';
+      setTimeout(() => n.style.display = 'none', 2000);
+    }
+    function showTab(tab) {
+      ['inventory', 'runs', 'mushrooms', 'offloads'].forEach(t => {
+        document.getElementById('tab-' + t).classList.add('hidden');
+        const btn = document.getElementById('btn-' + t);
+        if (btn) {
+          if (t === tab) {
+            btn.classList.remove('btn-secondary');
+            btn.classList.add('btn');
+          } else {
+            btn.classList.remove('btn');
+            btn.classList.add('btn-secondary');
+          }
+        }
+      });
+      document.getElementById('tab-' + tab).classList.remove('hidden');
+      updateDashboard();
+      if (tab === 'inventory') renderSupplies();
+      if (tab === 'runs') {
+        renderRuns();
+        renderRunSuppliesTable();
+      }
+      if (tab === 'offloads') renderOffloads();
+      if (tab === 'mushrooms') updateMushroomTab();
+    }
+
+    // ========== Inventory ==========
+
+    function addSupply() {
+      const name = document.getElementById('supplyName').value.trim();
+      const qtyToAdd = +document.getElementById('supplyQty').value;
+      const unit = document.getElementById('supplyUnit').value.trim();
+      const unitCost = +document.getElementById('supplyUnitCost').value;
+      if (!name || qtyToAdd < 0 || unitCost < 0 || !unit) return showNotification('Invalid supply entry', true);
+      let found = data.supplies.find(s => s.name.toLowerCase() === name.toLowerCase() && s.unit.toLowerCase() === unit.toLowerCase());
+      if (found) {
+        found.qty += qtyToAdd;
+        found.unit = unit; // update unit (case, spelling) just in case
+        found.unitCost = unitCost; // update cost in case new cost
+      } else {
+        data.supplies.push({ name, qty: qtyToAdd, unit, unitCost });
+      }
+      saveData();
+      renderSupplies();
+      updateDashboard();
+      renderRunSuppliesTable();
+      document.getElementById('supplyName').value = '';
+      document.getElementById('supplyQty').value = '';
+      document.getElementById('supplyUnit').value = '';
+      document.getElementById('supplyUnitCost').value = '';
+      showNotification('Supply added/updated');
+    }
+
+    function renderSupplies() {
+      const table = document.getElementById('suppliesTable');
+      table.innerHTML = '';
+      data.supplies.forEach((s, i) => {
+        table.innerHTML += `<tr>
+          <td class="p-2">${s.name}</td>
+          <td class="p-2">${s.qty}</td>
+          <td class="p-2">${s.unit}</td>
+          <td class="p-2">$${s.unitCost.toFixed(2)}</td>
+          <td class="p-2">$${(s.qty * s.unitCost).toFixed(2)}</td>
+          <td class="p-2">
+            <button class="btn btn-danger" onclick="deleteSupply(${i})">Delete</button>
+          </td>
+        </tr>`;
+      });
+    }
+
+    function deleteSupply(i) {
+      data.supplies.splice(i, 1);
+      saveData();
+      renderSupplies();
+      updateDashboard();
+      renderRunSuppliesTable();
+      showNotification('Supply deleted');
+    }
+
+    // ========== Runs Tab Supplies Table ==========
+
+    function renderRunSuppliesTable() {
+      const table = document.getElementById('runSuppliesTable');
+      if (!table) return;
+      table.innerHTML = '';
+      data.supplies.forEach((s, i) => {
+        table.innerHTML += `
+          <tr>
+            <td class="p-2">${s.name}</td>
+            <td class="p-2">${s.qty}</td>
+            <td class="p-2">${s.unit}</td>
+            <td class="p-2">
+              <input type="number" min="0" max="${s.qty}" step="any" class="run-supply-input"
+                id="runSupplyInput${i}" placeholder="0">
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // ========== Production Runs ==========
+
+    function addRun() {
+      const name = document.getElementById('runName').value.trim();
+      const mushroomsInput = document.getElementById('runUsed').value;
+      const mushroomsMade = mushroomsInput === "" ? 0 : +mushroomsInput;
+      if (!name || mushroomsMade < 0) return showNotification('Invalid run entry', true);
+
+      // Get usage for each supply from the run supplies table inputs
+      let usage = [];
+      let totalCost = 0;
+      let insufficient = false;
+      data.supplies.forEach((s, i) => {
+        const val = document.getElementById(`runSupplyInput${i}`);
+        let used = val && val.value ? +val.value : 0;
+        if (used < 0) used = 0;
+        if (used > s.qty) insufficient = true;
+        usage.push(used);
+      });
+      if (insufficient) {
+        showNotification('Insufficient supply for one or more items', true);
+        return;
+      }
+
+      // Deduct supplies and track cost
+      for (let i = 0; i < usage.length; i++) {
+        data.supplies[i].qty -= usage[i];
+        totalCost += usage[i] * data.supplies[i].unitCost;
+      }
+      if (mushroomsMade > 0) {
+        data.mushrooms += mushroomsMade;
+      }
+      data.expenses += totalCost;
+
+      data.runs.push({
+        name,
+        suppliesUsed: usage,
+        mushroomsMade,
+        totalCost,
+        time: Date.now()
+      });
+      saveData();
+      renderRuns();
+      renderSupplies();
+      updateDashboard();
+      renderRunSuppliesTable();
+      document.getElementById('runName').value = '';
+      document.getElementById('runUsed').value = '';
+      showNotification('Run added and inventory updated');
+    }
+
+    function renderRuns() {
+      const table = document.getElementById('runsTable');
+      table.innerHTML = '';
+      data.runs.forEach((run, i) => {
+        let used = run.suppliesUsed.map((u, j) => u > 0 ? `${data.supplies[j]?.name || 'N/A'}: ${u} ${data.supplies[j]?.unit || ''}` : '').filter(Boolean).join(', ');
+        table.innerHTML += `<tr>
+          <td class="p-2">${run.name}</td>
+          <td class="p-2">${used || '-'}</td>
+          <td class="p-2">${run.mushroomsMade > 0 ? run.mushroomsMade : '—'}</td>
+          <td class="p-2">$${run.totalCost.toFixed(2)}</td>
+          <td class="p-2"><button class="btn btn-danger" onclick="deleteRun(${i})">Delete</button></td>
+        </tr>`;
+      });
+    }
+
+    function deleteRun(i) {
+      data.runs.splice(i, 1);
+      saveData();
+      renderRuns();
+      updateDashboard();
+      showNotification('Run deleted');
+    }
+
+    // ========== Mushrooms Harvest/Stock ==========
+    function addHarvest() {
+      const qty = +document.getElementById('harvestQty').value;
+      if (qty <= 0) return showNotification('Invalid harvest amount', true);
+      data.mushrooms += qty;
+      saveData();
+      updateDashboard();
+      updateMushroomTab();
+      document.getElementById('harvestQty').value = '';
+      showNotification('Harvest added');
+    }
+    function updateMushroomTab() {
+      document.getElementById('mushroomStockDetail').textContent = data.mushrooms.toFixed(2);
+      document.getElementById('mushroomValueDetail').textContent = mushroomValue().toFixed(2);
+    }
+
+    // ========== Offload / Sell ==========
+    function offloadProduct() {
+      const qty = +document.getElementById('offloadQty').value;
+      if (qty <= 0 || qty > data.mushrooms) return showNotification('Invalid offload amount', true);
+      const pricePerG = (data.marketPrice || 20) / 3.5;
+      const income = qty * pricePerG;
+      data.mushrooms -= qty;
+      data.income += income;
+      data.offloads.unshift({ qty, date: new Date().toISOString(), income });
+      saveData();
+      updateDashboard();
+      renderOffloads();
+      updateMushroomTab();
+      document.getElementById('offloadQty').value = '';
+      showNotification('Product offloaded');
+    }
+    function renderOffloads() {
+      const list = document.getElementById('offloadsList');
+      list.innerHTML = '';
+      data.offloads.slice(0, 5).forEach(o => {
+        list.innerHTML += `<li>${o.qty}g on ${o.date} ($${o.income.toFixed(2)})</li>`;
+      });
+    }
+
+    // ========== Dashboard ==========
+    function updateDashboard() {
+      document.getElementById('suppliesCount').textContent = data.supplies.length;
+      document.getElementById('mushroomStock').textContent = data.mushrooms.toFixed(2);
+      document.getElementById('mushroomValue').textContent = mushroomValue().toFixed(2);
+      document.getElementById('totalExpenses').textContent = '$' + data.expenses.toFixed(2);
+      document.getElementById('totalProfit').textContent = '$' + (data.income - data.expenses).toFixed(2);
+      data.marketPrice = +document.getElementById('marketPrice').value;
+      saveData();
+    }
+    function mushroomValue() {
+      return (data.mushrooms / 3.5) * (data.marketPrice || 20);
+    }
+
+    // ========== Import/Export: Human-Readable Text File ==========
+    function exportTextFile() {
+      let lines = [];
+      lines.push('==== SUPPLIES ====');
+      data.supplies.forEach(s => {
+        lines.push(`${s.name} | ${s.qty} | ${s.unit} | ${s.unitCost}`);
+      });
+      lines.push('');
+      lines.push('==== RUNS ====');
+      data.runs.forEach(run => {
+        let date = run.time ? new Date(run.time).toISOString() : '';
+        let used = run.suppliesUsed
+          .map((u, j) => u > 0 ? `${data.supplies[j]?.name || 'N/A'}:${u} ${data.supplies[j]?.unit || ''}` : '')
+          .filter(Boolean).join(', ');
+        lines.push(`${run.name} | ${date} | ${used} | ${run.mushroomsMade} | ${run.totalCost}`);
+      });
+      lines.push('');
+      lines.push('==== OFFLOADS ====');
+      data.offloads.forEach(o => {
+        lines.push(`${o.qty} | ${o.date} | ${o.income}`);
+      });
+      lines.push('');
+      lines.push('==== SUMMARY ====');
+      lines.push(`Mushrooms: ${data.mushrooms}`);
+      lines.push(`MarketPrice: ${data.marketPrice}`);
+      lines.push(`Expenses: ${data.expenses}`);
+      lines.push(`Income: ${data.income}`);
+
+      let blob = new Blob([lines.join('\r\n')], { type: 'text/plain' });
+      let url = URL.createObjectURL(blob);
+      let a = document.createElement('a');
+      a.href = url;
+      a.download = 'mycology_lab_log.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showNotification('Exported lab log');
+    }
+
+    function importTextFile() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.txt,text/plain';
+      input.onchange = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            let text = e.target.result;
+            parseLabLog(text);
+            saveData();
+            updateDashboard();
+            renderSupplies();
+            renderRuns();
+            renderOffloads();
+            updateMushroomTab();
+            renderRunSuppliesTable();
+            showNotification('Imported lab log');
+          } catch(err) {
+            showNotification('Failed to import. Invalid file.', true);
+          }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
+
+    function parseLabLog(text) {
+      // Reset everything!
+      data.supplies = [];
+      data.runs = [];
+      data.offloads = [];
+      data.mushrooms = 0;
+      data.marketPrice = 20;
+      data.expenses = 0;
+      data.income = 0;
+
+      let lines = text.split(/\r?\n/);
+      let section = '';
+      for (let line of lines) {
+        line = line.trim();
+        if (line === '') continue;
+        if (line.startsWith('====')) {
+          if (line.includes('SUPPLIES')) section = 'supplies';
+          else if (line.includes('RUNS')) section = 'runs';
+          else if (line.includes('OFFLOADS')) section = 'offloads';
+          else if (line.includes('SUMMARY')) section = 'summary';
+          else section = '';
+          continue;
+        }
+        if (section === 'supplies') {
+          let [name, qty, unit, unitCost] = line.split('|').map(s => s.trim());
+          if (!name) continue;
+          data.supplies.push({ name, qty: Number(qty), unit, unitCost: Number(unitCost) });
+        } else if (section === 'runs') {
+          let [name, date, used, mushroomsMade, totalCost] = line.split('|').map(s => s.trim());
+          let suppliesUsed = [];
+          if (used && used.length > 0) {
+            let usedArr = used.split(',').map(s => s.trim());
+            for (let i = 0; i < data.supplies.length; i++) {
+              let su = usedArr.find(u => u.startsWith(`${data.supplies[i].name}:`));
+              if (su) {
+                let amount = parseFloat(su.split(':')[1]);
+                suppliesUsed[i] = isNaN(amount) ? 0 : amount;
+              } else {
+                suppliesUsed[i] = 0;
+              }
+            }
+          } else {
+            // No supplies used
+            for (let i = 0; i < data.supplies.length; i++) suppliesUsed[i] = 0;
+          }
+          data.runs.push({
+            name, time: date ? Date.parse(date) : undefined,
+            suppliesUsed,
+            mushroomsMade: Number(mushroomsMade) || 0,
+            totalCost: Number(totalCost) || 0
+          });
+        } else if (section === 'offloads') {
+          let [qty, date, income] = line.split('|').map(s => s.trim());
+          if (!qty) continue;
+          data.offloads.push({ qty: Number(qty), date, income: Number(income) });
+        } else if (section === 'summary') {
+          if (line.startsWith('Mushrooms:')) data.mushrooms = Number(line.split(':')[1].trim());
+          else if (line.startsWith('MarketPrice:')) data.marketPrice = Number(line.split(':')[1].trim());
+          else if (line.startsWith('Expenses:')) data.expenses = Number(line.split(':')[1].trim());
+          else if (line.startsWith('Income:')) data.income = Number(line.split(':')[1].trim());
+        }
+      }
+    }
+
+    // ========== Init ==========
+    showTab('inventory');
+    updateDashboard();
+    renderSupplies();
+    renderRuns();
+    renderOffloads();
+    updateMushroomTab();
+    renderRunSuppliesTable();
+
+  </script>
+</body>
+</html>

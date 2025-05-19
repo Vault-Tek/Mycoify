@@ -1,0 +1,57 @@
+````markdown name=CHANGELOG.md
+# Mycoify v0.1.03 – Patch Notes
+
+## ✨ New Features & Improvements
+
+### 🗑️ "Soft Delete" for All Major Records (Supplies, Runs, Tubs, Offloads)
+- **Delete now marks items as "deleted" instead of immediately removing them** from the database.
+  - Supplies, Production Runs, Colonizing Tubs, Fruiting Tubs, and Offloads all gain a `"deleted"` property.
+  - Deleted items are hidden from the UI but retained in storage and in export/import (as `"| DELETED"` in TXT log).
+  - This prevents accidental data loss and allows for full history/undo potential in future versions.
+
+- **TXT Export/Import fully supports soft-deleted records**:
+  - Any record marked deleted is exported with a `"| DELETED"` flag at the end of its line.
+  - Import parses and restores all deleted flags, keeping your full audit trail safe.
+
+### 🍄 Fruiting & Harvest Workflow Refinements
+- **Colonizing → Fruiting Move:**  
+  - Moving a tub to Fruiting now marks the original colonizing tub as deleted (instead of removing).
+  - Fruiting tubs also gain `deleted` and `harvested` flags.
+
+- **Harvested Fruiting Tubs Log:**  
+  - Deleting (harvesting) a fruiting tub now moves it to a separate `harvestedTubs` log (with species, tubId, fruiting date, harvested date, and deleted status).
+  - This enables complete tracking/auditing of all tub lifecycle events.
+
+- **"Log Fruit" Button:**  
+  - Each fruiting tub row now includes a "Log Fruit" button to directly add a harvest (in grams) to your mushroom stock, without leaving the Fruiting tab.
+
+### 🧩 UI/UX & Interaction Improvements
+- **Hamburger/side menu** actions work more robustly (hide hamburger when open, close on click, disables double triggers).
+- **Tub ID suggestion** for colonizing always updates to show the correct next available value, even after deletion.
+- **Deleting a supply or run** now just hides it; it can still be exported/restored.
+
+### 📦 TXT Export/Import Upgrades
+- **Exported logs now include**:
+  - `| DELETED` for any deleted record.
+  - A `==== HARVESTED TUBS ====` section listing fully harvested tubs.
+- **Import logic is robust**:
+  - All deleted flags and harvested status are restored.
+  - All sections and historic data are preserved.
+
+### 🛠️ Everything Else (Retained from v0.1.x)
+- All inputs accept dot/comma decimals.
+- All UI and tab logic as in previous version.
+- Local storage, notifications, and summary dashboard all function as before.
+
+## 📝 Known Limitations / Notes
+- Deleted records are not visible in the app, but remain in exports/imports.
+- No "undelete" (restore) feature yet.
+- No cloud/multi-user or advanced analytics.
+- TXT import expects correct format.
+
+---
+
+**Upgrade Note:**  
+You are now protected from accidental deletions across all your lab data. Exports keep your entire lab history, including deleted and harvested items, for full audit and backup!
+
+---

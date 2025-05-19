@@ -1,0 +1,38 @@
+````markdown name=CHANGELOG.md
+# Mycoify v0.1.06 – Patch Notes
+
+## ✨ New Feature: Collapsible Tab Summary Panel
+
+### 📋 Collapsible Summary Panel
+- The summary panel at the bottom of every tab is now **collapsible**!
+- By default, the summary/info panel is **closed** when you switch tabs or import data.
+- Click the summary title bar (with the arrow) to **expand** or **collapse** the panel:
+  - ▶ (arrow right) = collapsed/hidden
+  - ▼ (arrow down) = expanded/visible
+- The panel always starts closed when switching tabs, but **remembers your open/close action** within the current tab.
+
+### 🖥️ UI/UX Enhancements
+- The summary title row is now a button with a clickable arrow for clear interaction.
+- The summary panel expands/collapses smoothly and immediately updates on tab switch or data change.
+- All content and information in the summary panel remains the same as v0.1.05—just more user-friendly!
+
+### 🔄 Improved Reactivity
+- The summary panel auto-updates and closes when switching tabs, importing logs, or making data changes.
+- Opening the summary panel stays open as long as you remain on the same tab.
+
+### 🛠️ Everything Else (Retained from v0.1.05)
+- Soft delete for all records, modal flush log, mobile responsive layout.
+- TXT export/import with full lab, tub, flush, and sales log support.
+- All decimal/comma input flexibility, live dashboard, and notifications.
+
+## 📝 Known Limitations
+- No "undelete" (restore) feature yet.
+- No cloud/multi-user sync.
+- TXT import expects correct format.
+
+---
+
+**Upgrade Note:**  
+You can now keep your workspace tidier by collapsing the info panel—but always get a full summary for any tab with a single click!
+
+---

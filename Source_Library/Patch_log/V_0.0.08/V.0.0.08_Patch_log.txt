@@ -1,0 +1,40 @@
+# Mycoify v0.0.08 – Patch Notes
+
+## ✨ Improvements & Fixes
+
+### 🧪 Inventory: Case-Insensitive Matching for Supplies
+- **Inventory now uses case-insensitive matching for both supply name and unit when adding/updating supplies.**
+  - Prevents accidental duplicate entries due to differences in capitalization (e.g., "Peat moss" vs "peat moss", "ML" vs "ml").
+  - When updating an existing supply, the original name/unit casing is preserved, but matches are found regardless of case.
+
+### 🧑‍🔬 Production Run Import Robustness
+- **Importing runs from TXT lab logs now matches supplies by name in a case-insensitive way.**
+  - Fixes issues where imported production runs would not properly associate used supplies if there were case mismatches.
+  - Ensures all runs correctly reflect supply usage, even if names/units differ in case.
+
+### 👁️‍🗨️ UX/UI
+- All previous features, hints, and validations remain in place.
+- No changes to dashboard layout, run entry, or export format.
+
+### 🛠️ Technical Details
+- Added helper function for supply matching that ignores case.
+- All inventory operations (add/update/merge) now use this robust case-insensitive logic.
+- TXT import logic for runs also compares supply names in a case-insensitive manner.
+
+## 🛠️ Everything Else (Retained from v0.0.07)
+- Bulk pricing for "ml" supplies, with hint for total price entry.
+- Human-readable TXT export/import.
+- Interactive supply/run tables, harvest/offload management, and dashboard summaries.
+- Local storage, notifications, responsive UI.
+
+## 📝 Known Limitations (Unchanged)
+- Deleting a run or supply does not restore inventory/stock.
+- No cloud/multi-user features.
+- TXT import expects correct format—edit with care!
+
+---
+
+**Upgrade Note:**  
+This update is especially important if you work with supplies that may be entered with different capitalization over time—your logs and run histories will now always import and merge correctly!
+
+---

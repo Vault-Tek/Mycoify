@@ -1,0 +1,51 @@
+# Mycoify v0.0.06 – Patch Notes
+
+## ✨ New Features & Changes
+
+### Human-Readable Export & Import (TXT Lab Log)
+- **Export your entire lab as a readable `.txt` file**:
+  - New button: **Export / Save**
+  - Exports all supplies, runs, offloads, and summary (mushroom count, market price, expenses, income) in a plain text, human-parsable format.
+  - Fields are pipe (`|`) separated for easy viewing or editing.
+- **Import lab data from a `.txt` file**:
+  - New button: **Import / Load**
+  - Supports reloading the lab state from a backup or moving data between devices.
+  - Will reset all current data when a file is loaded.
+  - Accepts only the format produced by the export.
+
+### TXT Log Format Overview
+- **Supplies:** `name | qty | unit | unitCost`
+- **Runs:** `name | ISO date | used supplies | mushroomsMade | totalCost`
+- **Offloads:** `qty | date | income`
+- **Summary:** mushrooms, market price, expenses, income
+
+### Robust Import Logic & Error Handling
+- Graceful handling of missing or malformed fields.
+- Displays notification on success or failure of import.
+- After import, automatically updates all tables and dashboard.
+
+### UI and Button Changes
+- **Export/Import buttons renamed:**  
+  - "Export / Save" and "Import / Load" to clarify plain text log format.
+- All original JSON-based import/export has been replaced with the new human-readable text log.
+- All dashboard and tab features remain consistent.
+
+## 🛠️ Everything Else (Retained from 0.0.05)
+- Add/update/delete supplies with merge-by-name/unit and additive quantities.
+- Interactive table for production run supply usage.
+- Mushroom stock, harvesting, and valuation.
+- Offload/sell with profit calculation.
+- Responsive, dark-themed UI with notifications.
+
+## 📝 Known Limitations (Unchanged)
+- Deleting a run or supply does not restore inventory or stock.
+- No multi-user/cloud features.
+- Basic analytics only.
+- TXT import expects correct format—editing by hand may require care.
+
+---
+
+**Upgrade Note:**  
+For best results, always export a fresh lab log before making major changes, and use the provided import/export buttons for backups and transfers!
+
+---

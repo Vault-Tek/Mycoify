@@ -1,0 +1,38 @@
+# Mycoify v0.1.01 – Patch Notes
+
+## 🆕 Improvements
+
+### 🖥️ Responsive, Mobile-Friendly Production Run Entry
+- **Production Run entry form is now much more mobile-friendly and responsive!**
+  - The main input row (`Run Description`, `Production`, and `Add Run` button) now wraps and stacks vertically on screens smaller than 900px.
+  - This ensures the form is usable and easy to read on phones and tablets, as well as desktops.
+  - Inputs expand to full width on small screens for better touch accuracy.
+  - No layout overlap, crowding, or scrolling required for run entry on mobile.
+
+### 📝 Visual/Label Tweaks
+- The "Quantity" and "Cost Per Unit" fields in the inventory tab have slightly clearer labels.
+- The production run input for "Mushrooms Produced (g)" is now simply labeled "Production" for a cleaner look.
+
+### 🧑‍💻 UX Consistency
+- All input behaviors (comma/dot for decimals, case-insensitive supply matching, ml-bulk pricing, etc.) are retained and work identically as in v0.1.00.
+- No changes to data model, logic, import/export, or calculations.
+
+### 🛠️ Under the Hood
+- Added a mobile-responsive CSS media query for the `.flex` row that holds run entry inputs.
+- No JavaScript changes required—purely a UI improvement.
+
+## 🛠️ Everything Else (Retained from v0.1.00)
+- TXT import/export, interactive supply/run tables, offload, harvest, and dashboard all work as before.
+- All field validation, notifications, and local storage features remain.
+
+## 📝 Known Limitations (Unchanged)
+- Deleting a run or supply does not restore inventory/stock.
+- No cloud/multi-user features.
+- TXT import expects correct format—edit with care!
+
+---
+
+**Upgrade Note:**  
+On mobile devices or smaller windows, run entry is now quick and frustration-free. No more squinting or horizontal scrolling!
+
+---

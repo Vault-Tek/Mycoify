@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mycology Lab Spreadsheet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #111827; color: #fff; }
+    .card { background: #1F2937; border-radius: 1rem; box-shadow: 0 2px 8px #0003; }
+    .btn, .btn-secondary {
+      border-radius: 0.375rem; padding: 0.5rem 1rem; color: #fff; transition: background 0.2s;
+    }
+    .btn { background: #2563eb; }
+    .btn-secondary { background: #374151; }
+    .btn-danger { background: #dc2626; }
+    .input { background: #374151; color: #fff; border-radius: 0.375rem; padding: 0.5rem; }
+    .table-header { background: #111827; }
+    .notification {
+      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      background: #1F2937; color: #fff; padding: 1rem 2rem; border-radius: .5rem; display: none;
+      box-shadow: 0 2px 8px #0005; z-index: 1000;
+    }
+    .run-supply-input {
+      width: 70px;
+      background: #262f3f;
+      color: #fff;
+      border-radius: 0.375rem;
+      border: 1px solid #374151;
+      padding: 0.25rem 0.5rem;
+    }
+    .ml-hint {
+      font-size: 0.8rem;
+      color: #fbbf24;
+      margin-left: 0.5rem;
+    }
+    .side-menu-bg {
+      position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; background: #000a; z-index: 100; display: none;
+      transition: opacity 0.2s;
+    }
+    .side-menu-bg.open { display: block; }
+    .side-menu {
+      position: fixed; left: 0; top: 0; height: 100vh; width: 260px; background: #1F2937;
+      box-shadow: 2px 0 8px #0003; padding: 0; z-index: 101; transform: translateX(-100%);
+      transition: transform 0.2s;
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .side-menu.open { transform: translateX(0); }
+    .side-menu-header {
+      font-size: 1.3rem; font-weight: bold; padding: 1.2rem 1.5rem 1rem 1.5rem; color: #fff;
+      border-bottom: 1px solid #374151;
+    }
+    .side-menu .menu-btn {
+      display: block; width: 100%; text-align: left; padding: 0.75rem 1.5rem; background: none;
+      border: none; color: #fff; font-size: 1rem; cursor: pointer;
+      border-bottom: 1px solid #232c3a;
+      transition: background 0.15s;
+    }
+    .side-menu .menu-btn:hover { background: #2563eb; }
+    .hamburger {
+      width: 42px; height: 42px; background: none; border: none; display: flex; align-items: center; justify-content: center;
+      position: absolute; left: 1.5rem; top: 1.7rem; z-index: 110;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .hamburger-bar {
+      display: block; width: 28px; height: 3.5px; background: #fff; border-radius: 2px;
+      transition: all 0.2s;
+    }
+    .hamburger.hide { display: none !important; }
+    @media (max-width: 900px) {
+      #runFormRow { flex-direction: column; align-items: stretch; }
+      #runFormRow > * { width: 100% !important; margin-left: 0 !important; }
+      .side-menu { width: 85vw; min-width: 0; }
+    }
+    /* Modal styles */
+    .modal-bg {
+      position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; background: #000a; z-index: 5000; display: none;
+      align-items: center; justify-content: center;
+    }
+    .modal-bg.open { display: flex; }
+    .modal {
+      background: #1F2937;
+      border-radius: 1rem;
+      box-shadow: 0 2px 16px #0008;
+      padding: 2rem 2rem 1.5rem 2rem;
+      min-width: 320px;
+      max-width: 90vw;
+      color: #fff;
+      position: relative;
+      text-align: left;
+    }
+    .modal-close {
+      position: absolute; top: 0.5rem; right: 0.8rem; background: none; border: none; color: #fff; font-size: 1.8rem; cursor: pointer;
+    }
+    .modal-btn-row {
+      display: flex; gap: 1rem; margin-top: 1rem;
+    }
+    /* Remove number input arrows for all browsers */
+    input[type="number"]::-webkit-inner-spin-button, 
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type="number"] { -moz-appearance: textfield; }
+  </style>
+</head>
+<body class="flex flex-col items-center min-h-screen py-10">
+
+<!-- Hamburger -->
+<button id="hamburgerBtn" class="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+  <span class="hamburger-bar"></span>
+  <span class="hamburger-bar"></span>
+  <span class="hamburger-bar"></span>
+</button>
+<!-- Slideout menu -->
+<div id="sideMenuBg" class="side-menu-bg" onclick="bgCloseMenu(event)"></div>
+<nav id="sideMenu" class="side-menu" aria-label="Main menu" tabindex="-1">
+  <div class="side-menu-header">Menu</div>
+  <button type="button" class="menu-btn" id="exportBtn">Export / Save</button>
+  <button type="button" class="menu-btn" id="importBtn">Import / Load</button>
+</nav>
+<a id="realDownloadAnchor" style="display:none"></a>
+<div id="notification" class="notification"></div>
+<!-- Modal for log flush/dump tub -->
+<div id="fruitModalBg" class="modal-bg" tabindex="-1">
+  <div class="modal" id="fruitModal">
+    <button class="modal-close" onclick="closeFruitModal()" aria-label="Close">&times;</button>
+    <div id="fruitModalContent"></div>
+  </div>
+</div>
+
+<div class="w-full max-w-5xl card p-6 mb-6">
+  <h1 class="text-2xl font-bold mb-2 text-center">🍄 Mycology Lab Spreadsheet</h1>
+  <div class="flex flex-wrap gap-4 justify-center mb-4">
+    <div class="card p-4 flex-1 min-w-[220px]">
+      <div class="text-sm text-gray-400">Supplies in Inventory</div>
+      <div id="suppliesCount" class="text-xl font-semibold"></div>
+    </div>
+    <div class="card p-4 flex-1 min-w-[220px]">
+      <div class="text-sm text-gray-400">Mushroom Stock (g)</div>
+      <div id="mushroomStock" class="text-xl font-semibold"></div>
+      <div class="text-xs text-gray-400">Value: $<span id="mushroomValue"></span></div>
+    </div>
+    <div class="card p-4 flex-1 min-w-[220px]">
+      <div class="text-sm text-gray-400">Total Expenses</div>
+      <div id="totalExpenses" class="text-xl font-semibold"></div>
+    </div>
+    <div class="card p-4 flex-1 min-w-[220px]">
+      <div class="text-sm text-gray-400">Total Profit</div>
+      <div id="totalProfit" class="text-xl font-semibold"></div>
+    </div>
+  </div>
+  <div class="flex gap-4 justify-center flex-wrap">
+    <button id="btn-inventory" class="btn" onclick="showTab('inventory')">Inventory</button>
+    <button id="btn-runs" class="btn-secondary" onclick="showTab('runs')">Production Runs</button>
+    <button id="btn-colonizing" class="btn-secondary" onclick="showTab('colonizing')">Colonizing</button>
+    <button id="btn-fruiting" class="btn-secondary" onclick="showTab('fruiting')">Fruiting</button>
+    <button id="btn-mushrooms" class="btn-secondary" onclick="showTab('mushrooms')">Mushroom Stock</button>
+    <button id="btn-offloads" class="btn-secondary" onclick="showTab('offloads')">Offload Product</button>
+  </div>
+</div>
+
+<!-- Inventory Tab -->
+<div id="tab-inventory" class="w-full max-w-5xl card p-6 mb-6 hidden">
+  <h2 class="text-xl font-bold mb-4">Supplies Inventory</h2>
+  <form onsubmit="event.preventDefault(); addSupply();">
+    <div class="flex flex-wrap gap-4 mb-2">
+      <input id="supplyName" class="input flex-1" placeholder="Supply Name (e.g. Peat moss)">
+      <input id="supplyQty" class="input w-28" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="Quantity">
+      <input id="supplyUnit" class="input w-24" placeholder="Unit" oninput="showMlHint()">
+      <input id="supplyUnitCost" class="input w-32" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="Cost Per Unit">
+      <button type="submit" class="btn">Add / Update</button>
+      <span id="mlHint" class="ml-hint" style="display:none;">For <b>ml</b>: Enter the total price for all ml, not per ml!</span>
+    </div>
+    <div class="text-xs text-gray-400 mb-2">If supply exists, quantity will be increased. Units and cost will be updated.</div>
+  </form>
+  <div class="overflow-x-auto">
+    <table class="w-full mt-4 text-left">
+      <thead>
+        <tr class="table-header">
+          <th class="p-2">Supply</th>
+          <th class="p-2">Quantity</th>
+          <th class="p-2">Unit</th>
+          <th class="p-2">Unit Cost</th>
+          <th class="p-2">Total Cost</th>
+          <th class="p-2"></th>
+        </tr>
+      </thead>
+      <tbody id="suppliesTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Runs Tab -->
+<div id="tab-runs" class="w-full max-w-5xl card p-6 mb-6 hidden">
+  <h2 class="text-xl font-bold mb-4">Production Runs</h2>
+  <form id="runForm" onsubmit="event.preventDefault(); addRun();">
+    <div id="runFormRow" class="flex flex-row gap-2 mb-2 items-center w-full">
+      <input id="runName" class="input flex-1 min-w-32" placeholder="Run Description">
+      <input id="runUsed" class="input w-32" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="Harvest">
+      <button type="submit" class="btn ml-auto">Add Run</button>
+    </div>
+    <div class="overflow-x-auto mt-3 mb-3">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="table-header">
+            <th class="p-2">Supply</th>
+            <th class="p-2">Available</th>
+            <th class="p-2">Unit</th>
+            <th class="p-2">Use for this Run</th>
+          </tr>
+        </thead>
+        <tbody id="runSuppliesTable"></tbody>
+      </table>
+    </div>
+  </form>
+  <div class="overflow-x-auto">
+    <table class="w-full mt-4 text-left">
+      <thead>
+        <tr class="table-header">
+          <th class="p-2">Run</th>
+          <th class="p-2">Supplies Used</th>
+          <th class="p-2">Mushrooms Produced (g)</th>
+          <th class="p-2">Total Cost</th>
+          <th class="p-2"></th>
+        </tr>
+      </thead>
+      <tbody id="runsTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Colonizing Tab -->
+<div id="tab-colonizing" class="w-full max-w-5xl card p-6 mb-6 hidden">
+  <h2 class="text-xl font-bold mb-4">Colonizing Tubs</h2>
+  <form id="colonizingForm" onsubmit="event.preventDefault(); addColonizingTub();">
+    <div class="flex flex-wrap gap-4 mb-2">
+      <input id="colonizeSpecies" class="input flex-1" placeholder="Species (e.g. Golden Teacher)">
+      <input id="colonizeTubId" class="input w-20" value="" placeholder="Tub ID">
+      <input id="colonizeOuttakeDate" class="input w-40" type="date" placeholder="Outtake Date">
+      <button type="submit" class="btn">Add Tub</button>
+    </div>
+    <div class="text-xs text-gray-400 mb-2">Auto-incrementing Tub ID suggested. Outtake Date = Move to Fruiting.</div>
+  </form>
+  <div class="overflow-x-auto">
+    <table class="w-full mt-4 text-left">
+      <thead>
+        <tr class="table-header">
+          <th class="p-2">Species</th>
+          <th class="p-2">Tub ID</th>
+          <th class="p-2">Inoculation Date</th>
+          <th class="p-2">Outtake Date</th>
+          <th class="p-2"></th>
+        </tr>
+      </thead>
+      <tbody id="colonizingTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Fruiting Tab -->
+<div id="tab-fruiting" class="w-full max-w-5xl card p-6 mb-6 hidden">
+  <h2 class="text-xl font-bold mb-4">Fruiting</h2>
+  <form onsubmit="event.preventDefault(); addFruitingTub();">
+    <div class="flex flex-wrap gap-4 mb-2">
+      <select id="fruitingTubId" class="input w-24"></select>
+      <input id="fruitingSpecies" class="input flex-1" readonly placeholder="Species">
+      <input id="fruitingHarvestDate" class="input w-40" type="date" placeholder="Date Moved to Fruiting">
+      <button type="submit" class="btn">Move to Fruiting</button>
+    </div>
+    <div class="text-xs text-gray-400 mb-2">Select Tub ID to move from colonizing to fruiting. Only colonizing tubs appear here.</div>
+  </form>
+  <div class="overflow-x-auto">
+    <table class="w-full mt-4 text-left">
+      <thead>
+        <tr class="table-header">
+          <th class="p-2">Tub ID</th>
+          <th class="p-2">Species</th>
+          <th class="p-2">Fruiting Start Date</th>
+          <th class="p-2">Flush #</th>
+          <th class="p-2"></th>
+        </tr>
+      </thead>
+      <tbody id="fruitingTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Mushrooms Tab -->
+<div id="tab-mushrooms" class="w-full max-w-5xl card p-6 mb-6 hidden">
+  <h2 class="text-xl font-bold mb-4">Mushroom Stock</h2>
+  <form onsubmit="event.preventDefault(); addHarvest();">
+    <div class="flex flex-wrap gap-4 mb-2">
+      <input id="harvestQty" class="input w-32" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="Harvest (g)">
+      <button type="submit" class="btn">Add Harvest</button>
+    </div>
+  </form>
+  <div class="mt-4">
+    <div class="text-lg">Total Stock: <span id="mushroomStockDetail"></span> g</div>
+    <div class="text-lg">Estimated Value: $<span id="mushroomValueDetail"></span></div>
+    <div class="flex items-center gap-2 mt-2 text-lg">
+      <label for="marketPrice" class="mb-0">Market Price: $</label>
+      <input id="marketPrice" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" class="input w-24" value="20" onchange="updateDashboard()">
+      <span>/ 3.5g</span>
+    </div>
+  </div>
+</div>
+
+<!-- Offload Tab -->
+<div id="tab-offloads" class="w-full max-w-5xl card p-6 mb-6 hidden">
+  <h2 class="text-xl font-bold mb-4">Offload Product</h2>
+  <form onsubmit="event.preventDefault(); offloadProduct();">
+    <div class="flex flex-wrap gap-4 mb-2">
+      <input id="offloadQty" class="input w-32" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="Sell/Offload (g)">
+      <button type="submit" class="btn btn-danger">Offload</button>
+    </div>
+  </form>
+  <div class="mt-4">
+    <h3 class="text-lg mb-2">Recent Offloads</h3>
+    <ul id="offloadsList" class="list-disc ml-5"></ul>
+  </div>
+</div>
+
+<script>
+  // === Side Menu ===
+  function toggleMenu() {
+    const menu = document.getElementById('sideMenu');
+    const bg = document.getElementById('sideMenuBg');
+    const hamburger = document.getElementById('hamburgerBtn');
+    const isOpen = menu.classList.contains('open');
+    if (isOpen) {
+      menu.classList.remove('open');
+      bg.classList.remove('open');
+      hamburger.classList.remove('hide');
+    } else {
+      menu.classList.add('open');
+      bg.classList.add('open');
+      hamburger.classList.add('hide');
+    }
+  }
+  function closeMenu() {
+    document.getElementById('sideMenu').classList.remove('open');
+    document.getElementById('sideMenuBg').classList.remove('open');
+    document.getElementById('hamburgerBtn').classList.remove('hide');
+  }
+  function bgCloseMenu(e) {
+    if (e.target.id === 'sideMenuBg') {
+      closeMenu();
+    }
+  }
+
+  // === Data Model ===
+  let data = {
+    supplies: [],
+    runs: [],
+    mushrooms: 0,
+    offloads: [],
+    colonizing: [],
+    fruiting: [],
+    marketPrice: 20,
+    expenses: 0,
+    income: 0,
+    harvestedTubs: [],
+    tubFlushes: {}
+  };
+
+  // === Utility Functions ===
+  function ordinal(n) {
+    if(n%100>=11 && n%100<=13) return n + "th";
+    switch(n%10){
+      case 1: return n + "st";
+      case 2: return n + "nd";
+      case 3: return n + "rd";
+      default: return n + "th";
+    }
+  }
+
+  // === Local Storage ===
+  function saveData() {
+    localStorage.setItem('mycologyLabData', JSON.stringify(data));
+  }
+  function loadData() {
+    const d = localStorage.getItem('mycologyLabData');
+    if (d) data = JSON.parse(d);
+    document.getElementById('marketPrice').value = data.marketPrice || 20;
+  }
+  loadData();
+
+  // === Notification ===
+  function showNotification(msg, error = false) {
+    const n = document.getElementById('notification');
+    n.textContent = msg;
+    n.style.background = error ? '#dc2626' : '#1F2937';
+    n.style.display = 'block';
+    setTimeout(() => n.style.display = 'none', 2000);
+  }
+
+  // === Tabs ===
+  function showTab(tab) {
+    ['inventory', 'runs', 'colonizing', 'fruiting', 'mushrooms', 'offloads'].forEach(t => {
+      document.getElementById('tab-' + t).classList.add('hidden');
+      const btn = document.getElementById('btn-' + t);
+      if (btn) {
+        if (t === tab) {
+          btn.classList.remove('btn-secondary');
+          btn.classList.add('btn');
+        } else {
+          btn.classList.remove('btn');
+          btn.classList.add('btn-secondary');
+        }
+      }
+    });
+    document.getElementById('tab-' + tab).classList.remove('hidden');
+    updateDashboard();
+    if (tab === 'inventory') renderSupplies();
+    if (tab === 'runs') { renderRuns(); renderRunSuppliesTable(); }
+    if (tab === 'colonizing') { renderColonizing(); updateNextTubId(); }
+    if (tab === 'fruiting') { renderFruiting(); updateFruitingTubSelect(); }
+    if (tab === 'offloads') renderOffloads();
+    if (tab === 'mushrooms') updateMushroomTab();
+  }
+  function showMlHint() {
+    const unit = document.getElementById('supplyUnit').value.trim().toLowerCase();
+    document.getElementById('mlHint').style.display = (unit === 'ml') ? '' : 'none';
+  }
+
+  // === Inventory CRUD ===
+  function findSupplyIndex(name, unit) {
+    name = name.trim().toLowerCase();
+    unit = unit.trim().toLowerCase();
+    for (let i = 0; i < data.supplies.length; ++i) {
+      if (data.supplies[i].name.trim().toLowerCase() === name && data.supplies[i].unit.trim().toLowerCase() === unit) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  function addSupply() {
+    const name = document.getElementById('supplyName').value.trim();
+    const qtyToAddStr = document.getElementById('supplyQty').value.trim().replace(",", ".");
+    const qtyToAdd = +qtyToAddStr;
+    const unit = document.getElementById('supplyUnit').value.trim();
+    let unitCostInputStr = document.getElementById('supplyUnitCost').value.trim().replace(",", ".");
+    let unitCostInput = +unitCostInputStr;
+    if (!name || qtyToAdd <= 0 || unitCostInput < 0 || !unit) return showNotification('Invalid supply entry', true);
+
+    let unitCost = unit.toLowerCase() === 'ml'
+      ? (qtyToAdd > 0 ? unitCostInput / qtyToAdd : 0)
+      : unitCostInput;
+
+    let idx = findSupplyIndex(name, unit);
+    if (idx !== -1) {
+      data.supplies[idx].qty += qtyToAdd;
+      data.supplies[idx].unitCost = unitCost;
+      data.supplies[idx].deleted = false; // Restore if previously deleted
+    } else {
+      data.supplies.push({ name, qty: qtyToAdd, unit, unitCost, deleted: false });
+    }
+    saveData();
+    renderSupplies();
+    updateDashboard();
+    renderRunSuppliesTable();
+    document.getElementById('supplyName').value = '';
+    document.getElementById('supplyQty').value = '';
+    document.getElementById('supplyUnit').value = '';
+    document.getElementById('supplyUnitCost').value = '';
+    showMlHint();
+    showNotification('Supply added/updated');
+  }
+  function renderSupplies() {
+    const table = document.getElementById('suppliesTable');
+    table.innerHTML = '';
+    data.supplies.forEach((s, i) => {
+      if (s.deleted) return;
+      table.innerHTML += `<tr>
+        <td class="p-2">${s.name}</td>
+        <td class="p-2">${s.qty}</td>
+        <td class="p-2">${s.unit}</td>
+        <td class="p-2">$${parseFloat(s.unitCost).toFixed(2)}</td>
+        <td class="p-2">$${(s.qty * s.unitCost).toFixed(2)}</td>
+        <td class="p-2">
+          <button class="btn btn-danger" onclick="deleteSupply(${i})">Delete</button>
+        </td>
+      </tr>`;
+    });
+  }
+  function deleteSupply(i) {
+    data.supplies[i].deleted = true;
+    saveData();
+    renderSupplies();
+    updateDashboard();
+    renderRunSuppliesTable();
+    showNotification('Supply deleted');
+  }
+
+  // === Run Supplies Table (for runs tab) ===
+  function renderRunSuppliesTable() {
+    const table = document.getElementById('runSuppliesTable');
+    if (!table) return;
+    table.innerHTML = '';
+    data.supplies.forEach((s, i) => {
+      if (s.deleted) return;
+      table.innerHTML += `
+        <tr>
+          <td class="p-2">${s.name}</td>
+          <td class="p-2">${s.qty}</td>
+          <td class="p-2">${s.unit}</td>
+          <td class="p-2">
+            <input class="run-supply-input" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" id="runSupplyInput${i}" placeholder="0">
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  // === Production Runs ===
+  function addRun() {
+    const name = document.getElementById('runName').value.trim();
+    const mushroomsInput = document.getElementById('runUsed').value.trim().replace(",", ".");
+    const mushroomsMade = mushroomsInput === "" ? 0 : +mushroomsInput;
+    if (!name || mushroomsMade < 0) return showNotification('Invalid run entry', true);
+
+    let usage = [];
+    let totalCost = 0;
+    let insufficient = false;
+    data.supplies.forEach((s, i) => {
+      if (s.deleted) { usage.push(0); return; }
+      const val = document.getElementById(`runSupplyInput${i}`);
+      let used = val && val.value ? +val.value.trim().replace(",", ".") : 0;
+      if (used < 0) used = 0;
+      if (used > s.qty) insufficient = true;
+      usage.push(used);
+    });
+    if (insufficient) {
+      showNotification('Insufficient supply for one or more items', true);
+      return;
+    }
+
+    for (let i = 0; i < usage.length; i++) {
+      if (data.supplies[i].deleted) continue;
+      data.supplies[i].qty -= usage[i];
+      totalCost += usage[i] * data.supplies[i].unitCost;
+    }
+    if (mushroomsMade > 0) {
+      data.mushrooms += mushroomsMade;
+    }
+    data.expenses += totalCost;
+
+    data.runs.push({
+      name,
+      suppliesUsed: usage,
+      mushroomsMade,
+      totalCost,
+      time: Date.now(),
+      deleted: false
+    });
+    saveData();
+    renderRuns();
+    renderSupplies();
+    updateDashboard();
+    renderRunSuppliesTable();
+    document.getElementById('runName').value = '';
+    document.getElementById('runUsed').value = '';
+    showNotification('Run added and inventory updated');
+  }
+  function renderRuns() {
+    const table = document.getElementById('runsTable');
+    table.innerHTML = '';
+    data.runs.forEach((run, i) => {
+      if (run.deleted) return;
+      let used = run.suppliesUsed.map((u, j) => (u > 0 && data.supplies[j] && !data.supplies[j].deleted) ? `${data.supplies[j]?.name || 'N/A'}: ${u} ${data.supplies[j]?.unit || ''}` : '').filter(Boolean).join(', ');
+      table.innerHTML += `<tr>
+        <td class="p-2">${run.name}</td>
+        <td class="p-2">${used || '-'}</td>
+        <td class="p-2">${run.mushroomsMade > 0 ? run.mushroomsMade : '—'}</td>
+        <td class="p-2">$${run.totalCost.toFixed(2)}</td>
+        <td class="p-2"><button class="btn btn-danger" onclick="deleteRun(${i})">Delete</button></td>
+      </tr>`;
+    });
+  }
+  function deleteRun(i) {
+    data.runs[i].deleted = true;
+    saveData();
+    renderRuns();
+    updateDashboard();
+    showNotification('Run deleted');
+  }
+
+  // === Colonizing CRUD ===
+  function getNextTubId() {
+    const used = new Set(data.colonizing.filter(t=>!t.deleted).map(t => t.tubId).concat(data.fruiting.filter(f=>!f.deleted).map(f => f.tubId)));
+    let letter = 'A'.charCodeAt(0);
+    let number = 1;
+    while (true) {
+      let candidate = String.fromCharCode(letter) + number;
+      if (!used.has(candidate)) return candidate;
+      if (number < 9) number++;
+      else {
+        number = 1;
+        letter++;
+        if (letter > 'Z'.charCodeAt(0)) {
+          letter = 'A'.charCodeAt(0);
+          number++;
+        }
+      }
+    }
+  }
+  function updateNextTubId() {
+    document.getElementById('colonizeTubId').placeholder = getNextTubId();
+  }
+  function addColonizingTub() {
+    const species = document.getElementById('colonizeSpecies').value.trim();
+    const tubId = document.getElementById('colonizeTubId').value.trim() || document.getElementById('colonizeTubId').placeholder;
+    const outtakeDate = document.getElementById('colonizeOuttakeDate').value;
+    if (!species || !tubId || !outtakeDate) return showNotification('Fill all colonizing fields', true);
+    data.colonizing.push({
+      species,
+      tubId,
+      inocDate: (new Date()).toISOString().slice(0,10),
+      outtakeDate,
+      deleted: false
+    });
+    saveData();
+    renderColonizing();
+    updateNextTubId();
+    renderFruiting();
+    showNotification('Tub added to Colonizing');
+    document.getElementById('colonizeSpecies').value = '';
+    document.getElementById('colonizeTubId').value = '';
+    document.getElementById('colonizeOuttakeDate').value = '';
+  }
+  function deleteColonizingTub(idx) {
+    data.colonizing[idx].deleted = true;
+    saveData();
+    renderColonizing();
+    updateNextTubId();
+    renderFruiting();
+    showNotification('Colonizing tub deleted');
+  }
+  function renderColonizing() {
+    const table = document.getElementById('colonizingTable');
+    table.innerHTML = '';
+    data.colonizing.forEach((tub, i) => {
+      if (tub.deleted) return;
+      table.innerHTML += `<tr>
+        <td class="p-2">${tub.species}</td>
+        <td class="p-2">${tub.tubId}</td>
+        <td class="p-2">${tub.inocDate}</td>
+        <td class="p-2">${tub.outtakeDate}</td>
+        <td class="p-2"><button class="btn btn-danger" onclick="deleteColonizingTub(${i})">Delete</button></td>
+      </tr>`;
+    });
+  }
+
+  // === Fruiting CRUD ===
+  function getColonizingTubsForFruiting() {
+    return data.colonizing.filter(tub => !tub.deleted && !data.fruiting.filter(f=>!f.deleted).find(f => f.tubId === tub.tubId));
+  }
+  function updateFruitingTubSelect() {
+    const select = document.getElementById('fruitingTubId');
+    if (!select) return;
+    const available = getColonizingTubsForFruiting();
+    select.innerHTML = available.length === 0 ? '<option value="">No tubs available</option>' : '';
+    available.forEach(tub => {
+      select.innerHTML += `<option value="${tub.tubId}">${tub.tubId}</option>`;
+    });
+    updateFruitingSpecies();
+  }
+  function updateFruitingSpecies() {
+    const select = document.getElementById('fruitingTubId');
+    const speciesInput = document.getElementById('fruitingSpecies');
+    if (!select || !speciesInput) return;
+    const tubId = select.value;
+    const tub = data.colonizing.find(t => t.tubId === tubId && !t.deleted);
+    speciesInput.value = tub ? tub.species : '';
+  }
+  document.addEventListener('change', function(e){
+    if (e.target && e.target.id === 'fruitingTubId') updateFruitingSpecies();
+  });
+  function addFruitingTub() {
+    const tubId = document.getElementById('fruitingTubId').value.trim();
+    const species = document.getElementById('fruitingSpecies').value.trim();
+    const fruitingDate = document.getElementById('fruitingHarvestDate').value;
+    if (!tubId || !species || !fruitingDate) return showNotification('Fill all fruiting fields', true);
+    // Remove from colonizing
+    const idx = data.colonizing.findIndex(t => t.tubId === tubId && !t.deleted);
+    if (idx !== -1) {
+      data.colonizing[idx].deleted = true;
+    }
+    // Add to fruiting
+    data.fruiting.push({
+      tubId,
+      species,
+      fruitingDate,
+      harvested: false,
+      deleted: false
+    });
+    saveData();
+    renderColonizing();
+    renderFruiting();
+    updateFruitingTubSelect();
+    updateNextTubId();
+    showNotification('Tub moved to Fruiting');
+    document.getElementById('fruitingHarvestDate').value = '';
+  }
+
+  // === Fruiting Modal with flushNum as text (no arrows) ===
+  function openFruitModal(idx) {
+    const tub = data.fruiting[idx];
+    if (!tub || tub.deleted) return;
+    let flushArr = data.tubFlushes[tub.tubId] || [];
+    let flushHistoryHtml = '';
+    if (flushArr.length > 0) {
+      flushHistoryHtml = '<div class="mb-3"><b>Flush history:</b><ul class="list-disc pl-5">';
+      flushArr.forEach(f => {
+        if (f.dump) {
+          flushHistoryHtml += `<li><span class="text-red-400">Tub dumped on ${f.date}</span></li>`;
+        } else {
+          flushHistoryHtml += `<li>${ordinal(f.flushNum)} flush, ${f.date}, ${f.grams}g</li>`;
+        }
+      });
+      flushHistoryHtml += '</ul></div>';
+    }
+    document.getElementById('fruitModalContent').innerHTML = `
+      <h2 class="text-lg font-bold mb-2">Log Flush for Tub <span class="text-blue-300">${tub.tubId}</span> (${tub.species})</h2>
+      ${flushHistoryHtml}
+      <form id="flushForm" onsubmit="event.preventDefault(); submitFlush(${idx});">
+        <div class="mb-2">
+          <label class="block mb-1">Flush number:</label>
+          <input class="input w-28" id="flushNum" type="text" pattern="\\d*" inputmode="numeric" value="${flushArr.length === 0 ? 1 : ''}" placeholder="e.g. 2" required>
+        </div>
+        <div class="mb-2">
+          <label class="block mb-1">Flush date:</label>
+          <input class="input w-44" type="date" id="flushDate" value="${(new Date()).toISOString().slice(0,10)}" required>
+        </div>
+        <div class="mb-2">
+          <label class="block mb-1">Harvested (g):</label>
+          <input class="input w-28" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" id="flushGrams" placeholder="0" required>
+        </div>
+        <div class="modal-btn-row">
+          <button type="submit" class="btn">Log Flush</button>
+          <button type="button" class="btn btn-danger" onclick="dumpTub(${idx})">Dump Tub</button>
+        </div>
+      </form>
+    `;
+    document.getElementById('fruitModalBg').classList.add('open');
+    document.getElementById('flushNum').focus();
+  }
+  function closeFruitModal() {
+    document.getElementById('fruitModalBg').classList.remove('open');
+    document.getElementById('fruitModalContent').innerHTML = '';
+  }
+  function submitFlush(idx) {
+    const tub = data.fruiting[idx];
+    if (!tub || tub.deleted) return;
+    const flushArr = data.tubFlushes[tub.tubId] = data.tubFlushes[tub.tubId] || [];
+    let flushNum = document.getElementById('flushNum').value.trim();
+    if (!flushNum) flushNum = flushArr.length + 1;
+    flushNum = +flushNum;
+    const date = document.getElementById('flushDate').value;
+    let grams = document.getElementById('flushGrams').value.trim().replace(",", ".");
+    grams = +grams;
+    if (!date || isNaN(grams) || grams <= 0 || isNaN(flushNum) || flushNum < 1) {
+      showNotification("Invalid flush entry", true); return;
+    }
+    flushArr.push({ flushNum, date, grams });
+    data.mushrooms += grams;
+    saveData();
+    updateDashboard();
+    renderFruiting();
+    updateMushroomTab && updateMushroomTab();
+    showNotification(`Logged ${ordinal(flushNum)} flush for tub ${tub.tubId}`);
+    closeFruitModal();
+  }
+  function dumpTub(idx) {
+    const tub = data.fruiting[idx];
+    if (!tub || tub.deleted) return;
+    data.tubFlushes[tub.tubId] = data.tubFlushes[tub.tubId] || [];
+    data.tubFlushes[tub.tubId].push({ dump: true, date: (new Date()).toISOString().slice(0,10) });
+    tub.harvested = true;
+    tub.harvestedDate = (new Date()).toISOString().slice(0,10);
+    data.harvestedTubs = data.harvestedTubs || [];
+    data.harvestedTubs.push({
+      tubId: tub.tubId,
+      species: tub.species,
+      fruitingDate: tub.fruitingDate,
+      harvestedDate: tub.harvestedDate,
+      status: "Dumped"
+    });
+    tub.deleted = true;
+    saveData();
+    renderFruiting();
+    showNotification('Tub dumped and removed');
+    closeFruitModal();
+  }
+  function renderFruiting() {
+    const table = document.getElementById('fruitingTable');
+    table.innerHTML = '';
+    data.fruiting.forEach((f, i) => {
+      if (f.deleted) return;
+      let flushes = (data.tubFlushes && data.tubFlushes[f.tubId]) ? data.tubFlushes[f.tubId].filter(x => !x.dump).length : 0;
+      table.innerHTML += `<tr>
+        <td class="p-2">${f.tubId}</td>
+        <td class="p-2">${f.species}</td>
+        <td class="p-2">${f.fruitingDate}</td>
+        <td class="p-2">${flushes === 0 ? '1st' : ordinal(flushes + 1)} (last: ${flushes > 0 ? ordinal(flushes) : '-'})</td>
+        <td class="p-2">
+          <button class="btn" onclick="openFruitModal(${i})">Log Fruit / Flush</button>
+        </td>
+      </tr>`;
+    });
+  }
+
+  // === Mushrooms Harvest/Stock ===
+  function addHarvest() {
+    const qtyStr = document.getElementById('harvestQty').value.trim().replace(",", ".");
+    const qty = +qtyStr;
+    if (qty <= 0) return showNotification('Invalid harvest amount', true);
+    data.mushrooms += qty;
+    saveData();
+    updateDashboard();
+    updateMushroomTab();
+    document.getElementById('harvestQty').value = '';
+    showNotification('Harvest added');
+  }
+  function updateMushroomTab() {
+    document.getElementById('mushroomStockDetail').textContent = data.mushrooms.toFixed(2);
+    document.getElementById('mushroomValueDetail').textContent = mushroomValue().toFixed(2);
+  }
+
+  // === Offload / Sell ===
+  function offloadProduct() {
+    const qtyStr = document.getElementById('offloadQty').value.trim().replace(",", ".");
+    const qty = +qtyStr;
+    if (qty <= 0 || qty > data.mushrooms) return showNotification('Invalid offload amount', true);
+    const pricePerG = (data.marketPrice || 20) / 3.5;
+    const income = qty * pricePerG;
+    data.mushrooms -= qty;
+    data.income += income;
+    data.offloads.unshift({ qty, date: new Date().toISOString(), income, deleted: false });
+    saveData();
+    updateDashboard();
+    renderOffloads();
+    updateMushroomTab();
+    document.getElementById('offloadQty').value = '';
+    showNotification('Product offloaded');
+  }
+  function renderOffloads() {
+    const list = document.getElementById('offloadsList');
+    list.innerHTML = '';
+    data.offloads.filter(o => !o.deleted).slice(0, 5).forEach(o => {
+      list.innerHTML += `<li>${o.qty}g on ${o.date} ($${o.income.toFixed(2)})</li>`;
+    });
+  }
+
+  // === Dashboard ===
+  function updateDashboard() {
+    document.getElementById('suppliesCount').textContent = data.supplies.filter(s=>!s.deleted).length;
+    document.getElementById('mushroomStock').textContent = data.mushrooms.toFixed(2);
+    document.getElementById('mushroomValue').textContent = mushroomValue().toFixed(2);
+    document.getElementById('totalExpenses').textContent = '$' + data.expenses.toFixed(2);
+    document.getElementById('totalProfit').textContent = '$' + (data.income - data.expenses).toFixed(2);
+    let mpStr = document.getElementById('marketPrice').value.trim().replace(",", ".");
+    data.marketPrice = +mpStr;
+    saveData();
+  }
+  function mushroomValue() {
+    return (data.mushrooms / 3.5) * (data.marketPrice || 20);
+  }
+
+  // === Export/Import ===
+  function exportTextFile() {
+    let lines = [];
+    lines.push('==== SUPPLIES ====');
+    data.supplies.forEach(s => {
+      let line = `${s.name} | ${s.qty} | ${s.unit} | ${parseFloat(s.unitCost).toFixed(2)}`;
+      if (s.deleted) line += ' | DELETED';
+      lines.push(line);
+    });
+    lines.push('');
+    lines.push('==== RUNS ====');
+    data.runs.forEach(run => {
+      let date = run.time ? new Date(run.time).toISOString() : '';
+      let used = run.suppliesUsed
+        .map((u, j) => (u > 0 && data.supplies[j] && !data.supplies[j].deleted) ? `${data.supplies[j]?.name || 'N/A'}:${u} ${data.supplies[j]?.unit || ''}` : '')
+        .filter(Boolean).join(', ');
+      let line = `${run.name} | ${date} | ${used} | ${run.mushroomsMade} | ${run.totalCost}`;
+      if (run.deleted) line += ' | DELETED';
+      lines.push(line);
+    });
+    lines.push('');
+    lines.push('==== COLONIZING ====');
+    data.colonizing.forEach(tub => {
+      let line = `${tub.species} | ${tub.tubId} | ${tub.inocDate} | ${tub.outtakeDate}`;
+      if (tub.deleted) line += ' | DELETED';
+      lines.push(line);
+    });
+    lines.push('');
+    lines.push('==== FRUITING ====');
+    data.fruiting.forEach(f => {
+      let line = `${f.tubId} | ${f.species} | ${f.fruitingDate} | `;
+      if (f.deleted) line += 'DELETED';
+      lines.push(line);
+    });
+    if (data.harvestedTubs && data.harvestedTubs.length) {
+      lines.push('');
+      lines.push('==== HARVESTED TUBS ====');
+      data.harvestedTubs.forEach(h => {
+        let line = `${h.tubId} | ${h.species} | ${h.fruitingDate} | Harvested | ${h.harvestedDate}`;
+        if (h.status === "Dumped") line += " | DUMPED";
+        if (h.deleted) line += ' | DELETED';
+        lines.push(line);
+      });
+    }
+    if (data.tubFlushes && Object.keys(data.tubFlushes).length) {
+      lines.push('');
+      lines.push('==== FLUSH LOGS ====');
+      Object.keys(data.tubFlushes).forEach(tubId => {
+        data.tubFlushes[tubId].forEach(f => {
+          if (f.dump) {
+            lines.push(`${tubId} | DUMPED | ${f.date}`);
+          } else {
+            lines.push(`${tubId} | ${f.flushNum} | ${f.date} | ${f.grams}g`);
+          }
+        });
+      });
+    }
+    lines.push('');
+    lines.push('==== OFFLOADS ====');
+    data.offloads.forEach(o => {
+      let line = `${o.qty} | ${o.date} | ${o.income}`;
+      if (o.deleted) line += ' | DELETED';
+      lines.push(line);
+    });
+    lines.push('');
+    lines.push('==== SUMMARY ====');
+    lines.push(`Mushrooms: ${data.mushrooms}`);
+    lines.push(`MarketPrice: ${data.marketPrice}`);
+    lines.push(`Expenses: ${data.expenses}`);
+    lines.push(`Income: ${data.income}`);
+
+    let blob = new Blob([lines.join('\r\n')], { type: 'text/plain' });
+    let url = URL.createObjectURL(blob);
+    let a = document.getElementById('realDownloadAnchor');
+    a.href = url;
+    a.download = 'mycology_lab_log.txt';
+    a.click();
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 200);
+
+    showNotification('Exported lab log');
+  }
+
+  function importTextFile() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.txt,text/plain';
+    input.onchange = (event) => {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          let text = e.target.result;
+          parseLabLog(text);
+          saveData();
+          updateDashboard();
+          renderSupplies();
+          renderRuns();
+          renderOffloads();
+          renderColonizing();
+          renderFruiting();
+          updateMushroomTab();
+          renderRunSuppliesTable();
+          updateNextTubId();
+          updateFruitingTubSelect();
+          showNotification('Imported lab log');
+        } catch(err) {
+          showNotification('Failed to import. Invalid file.', true);
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  }
+  function parseLabLog(text) {
+    data.supplies = [];
+    data.runs = [];
+    data.colonizing = [];
+    data.fruiting = [];
+    data.harvestedTubs = [];
+    data.offloads = [];
+    data.tubFlushes = {};
+    data.mushrooms = 0;
+    data.marketPrice = 20;
+    data.expenses = 0;
+    data.income = 0;
+
+    let lines = text.split(/\r?\n/);
+    let section = '';
+    for (let line of lines) {
+      line = line.trim();
+      if (line === '') continue;
+      if (line.startsWith('====')) {
+        if (line.includes('SUPPLIES')) section = 'supplies';
+        else if (line.includes('RUNS')) section = 'runs';
+        else if (line.includes('COLONIZING')) section = 'colonizing';
+        else if (line.includes('FRUITING')) section = 'fruiting';
+        else if (line.includes('HARVESTED TUBS')) section = 'harvestedTubs';
+        else if (line.includes('OFFLOADS')) section = 'offloads';
+        else if (line.includes('FLUSH LOGS')) section = 'flushLogs';
+        else if (line.includes('SUMMARY')) section = 'summary';
+        else section = '';
+        continue;
+      }
+      if (section === 'supplies') {
+        let [name, qty, unit, unitCost, deletedFlag] = line.split('|').map(s => s.trim());
+        if (!name) continue;
+        let deleted = (deletedFlag && deletedFlag.toUpperCase() === 'DELETED');
+        data.supplies.push({ name, qty: Number(qty), unit, unitCost: Number(unitCost), deleted });
+      } else if (section === 'runs') {
+        let [name, date, used, mushroomsMade, totalCost, deletedFlag] = line.split('|').map(s => s.trim());
+        let suppliesUsed = [];
+        if (used && used.length > 0) {
+          let usedArr = used.split(',').map(s => s.trim());
+          for (let i = 0; i < data.supplies.length; i++) {
+            let su = usedArr.find(u => u.toLowerCase().startsWith(`${data.supplies[i].name.trim().toLowerCase()}:`));
+            if (su) {
+              let amount = parseFloat(su.split(':')[1]);
+              suppliesUsed[i] = isNaN(amount) ? 0 : amount;
+            } else {
+              suppliesUsed[i] = 0;
+            }
+          }
+        } else {
+          for (let i = 0; i < data.supplies.length; i++) suppliesUsed[i] = 0;
+        }
+        let deleted = (deletedFlag && deletedFlag.toUpperCase() === 'DELETED');
+        data.runs.push({
+          name, time: date ? Date.parse(date) : undefined,
+          suppliesUsed,
+          mushroomsMade: Number(mushroomsMade) || 0,
+          totalCost: Number(totalCost) || 0,
+          deleted
+        });
+      } else if (section === 'colonizing') {
+        let [species, tubId, inocDate, outtakeDate, deletedFlag] = line.split('|').map(s => s.trim());
+        if (!species) continue;
+        let deleted = (deletedFlag && deletedFlag.toUpperCase() === 'DELETED');
+        data.colonizing.push({ species, tubId, inocDate, outtakeDate, deleted });
+      } else if (section === 'fruiting') {
+        let [tubId, species, fruitingDate, deletedFlag] = line.split('|').map(s => s.trim());
+        if (!tubId) continue;
+        let deleted = (deletedFlag && deletedFlag.toUpperCase() === 'DELETED');
+        data.fruiting.push({ tubId, species, fruitingDate, harvested: false, deleted });
+      } else if (section === 'harvestedTubs') {
+        let [tubId, species, fruitingDate, status, harvestedDate, deletedFlag] = line.split('|').map(s => s.trim());
+        if (!tubId) continue;
+        let deleted = (deletedFlag && deletedFlag.toUpperCase() === 'DELETED');
+        data.harvestedTubs.push({ tubId, species, fruitingDate, harvestedDate, status, deleted });
+      } else if (section === 'offloads') {
+        let [qty, date, income, deletedFlag] = line.split('|').map(s => s.trim());
+        if (!qty) continue;
+        let deleted = (deletedFlag && deletedFlag.toUpperCase() === 'DELETED');
+        data.offloads.push({ qty: Number(qty), date, income: Number(income), deleted });
+      } else if (section === 'flushLogs') {
+        let parts = line.split('|').map(s => s.trim());
+        if (parts.length >= 3) {
+          let tubId = parts[0];
+          data.tubFlushes[tubId] = data.tubFlushes[tubId] || [];
+          if (parts[1].toUpperCase() === "DUMPED") {
+            data.tubFlushes[tubId].push({ dump: true, date: parts[2] });
+          } else {
+            let flushNum = Number(parts[1]);
+            let date = parts[2];
+            let grams = parts[3] ? parseFloat(parts[3].replace("g", "")) : 0;
+            data.tubFlushes[tubId].push({ flushNum, date, grams });
+          }
+        }
+      } else if (section === 'summary') {
+        if (line.startsWith('Mushrooms:')) data.mushrooms = Number(line.split(':')[1].trim());
+        else if (line.startsWith('MarketPrice:')) data.marketPrice = Number(line.split(':')[1].trim());
+        else if (line.startsWith('Expenses:')) data.expenses = Number(line.split(':')[1].trim());
+        else if (line.startsWith('Income:')) data.income = Number(line.split(':')[1].trim());
+      }
+    }
+  }
+
+  document.getElementById('exportBtn').onclick = function() { closeMenu(); setTimeout(exportTextFile, 100); };
+  document.getElementById('importBtn').onclick = function() { closeMenu(); setTimeout(importTextFile, 100); };
+
+  // === Modal Dismiss on BG Click & ESC ===
+  document.getElementById('fruitModalBg').addEventListener('mousedown', function(e){
+    if (e.target === this) closeFruitModal();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === "Escape") closeFruitModal();
+  });
+
+  showTab('inventory');
+  updateDashboard();
+  renderSupplies();
+  renderRuns();
+  renderOffloads();
+  renderColonizing();
+  renderFruiting();
+  updateMushroomTab && updateMushroomTab();
+  renderRunSuppliesTable && renderRunSuppliesTable();
+  updateNextTubId && updateNextTubId();
+  updateFruitingTubSelect && updateFruitingTubSelect();
+</script>
+</body>
+</html>

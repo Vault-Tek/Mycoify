@@ -1,0 +1,54 @@
+# Mycoify v0.1.02 – Patch Notes
+
+## 🎉 Major Feature: Tub & Harvest Batch Tracking!
+
+### 🍄 New: Colonizing & Fruiting Management Tabs
+- **Colonizing Tubs Tab**
+  - Log each new tub with:
+    - **Species** (e.g., "Golden Teacher")
+    - **Auto-incrementing Tub ID** (e.g., A1, A2, ..., B1, etc.)
+    - **Inoculation Date** (auto-filled with today)
+    - **Outtake Date** (date field; marks planned transfer to fruiting)
+  - View, track, and delete colonizing tubs in a dedicated table.
+
+- **Fruiting / Harvest Log Tab**
+  - Move tubs from Colonizing to Fruiting by logging a harvest:
+    - Select from available colonized tub IDs (only those not yet harvested)
+    - Species auto-fills from colonizing log
+    - Enter harvest date
+    - View, track, and delete fruiting/harvest records in a dedicated table
+
+- **Automatic Tub ID Generator**
+  - Tub IDs auto-increment in a simple series for clear batch tracking.
+
+### 🧭 New Navigation/UI: Slideout Side Menu!
+- **Hamburger menu** at top left for quick access to:
+  - Export / Save
+  - Import / Load
+- Menu overlays the app and closes on click outside or "Escape" key.
+
+### 🧑‍🔬 UX & Workflow Improvements
+- Colonizing and fruiting tabs are now top-level buttons, just like Inventory and Runs.
+- All forms and tables are mobile-friendly and responsive.
+- Tub selection and species autofill in Fruiting harvest entry streamlines batch logging.
+
+### 📦 TXT Export/Import Extended
+- **TXT export now includes Colonizing and Fruiting sections** for full batch log backup/restore.
+- Import will restore all tubs, runs, supplies, offloads, and summary data in one go.
+
+### 🛠️ Everything Else (Retained from v0.1.x)
+- Decimal/comma input flexibility, ml-bulk handling, case-insensitive supply matching.
+- All dashboard, run, offload, harvest, and inventory features remain unchanged.
+
+## 📝 Known Limitations (Unchanged)
+- No cross-linking of harvest batch with mushroom stock (stock not auto-incremented from fruiting tab).
+- Deleting a tub or harvest does not affect inventory or mushroom count.
+- TXT import expects correct format.
+- No cloud/multi-user features.
+
+---
+
+**Upgrade Note:**  
+You can now track every grow tub and harvest batch from inoculation to fruiting to offload—all in one place. Export/import for full lab backups now includes all tub/batch data!
+
+---

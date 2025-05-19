@@ -1,0 +1,46 @@
+# Mycoify v0.1.00 – Patch Notes
+
+## 🚀 0.1.00 Major Update
+
+### 🔢 Universal Numeric Input: Decimal & Comma Support Everywhere!
+- **All numeric fields (including supply cost, quantity, mushrooms produced, harvest, offload, market price, production run supply usage) now support both dot (`.`) and comma (`,`) as decimal separators.**
+  - Works in all browsers and on all devices, including mobile.
+  - You can type `3,14` or `3.14` and both will be interpreted as `3.14`.
+- All numeric input fields now use `inputmode="decimal"` and an appropriate pattern for easier input and no accidental up/down arrows.
+- Robust conversion ensures consistent decimal handling for all calculations and storage.
+
+### 🧪 Inventory: More Intuitive & Flexible
+- Supply quantity and unit cost fields now allow decimal/comma input, parsed and stored accurately.
+- Case-insensitive, duplicate-avoiding supply matching is maintained.
+- "ml" unit logic (bulk pricing) continues to work as before, now with improved decimal entry.
+
+### 🧑‍🔬 Production Runs & Harvest
+- All production run and harvest inputs now accept decimals using dot or comma.
+- Table-driven supply usage for runs is more robust and mobile-friendly.
+
+### 💸 Offloading & Market Price
+- Offload/sell and market price inputs also accept both commas and dots as decimal separators.
+
+### 📦 Import/Export (TXT)
+- Exported TXT log remains unchanged, but underlying values are always correctly parsed and stored regardless of decimal separator used during entry.
+
+### 🛠️ Technical Details
+- All relevant inputs are normalized with `.replace(",", ".")` for numeric conversion.
+- Pattern and inputmode set for all number fields.
+
+## 🪄 UI/UX
+- All input fields now provide a more consistent and accessible experience, especially on mobile devices and for international users.
+- No visible layout or feature changes, but improved reliability and flexibility for all input.
+
+## 📝 Known Limitations
+- Deleting a run or supply does not restore inventory/stock.
+- No cloud/multi-user features.
+- TXT import expects correct format—edit with care!
+- Export still uses `.` as decimal separator for compatibility.
+
+---
+
+**Upgrade Note:**  
+You can now freely use commas or periods for any numeric input in Mycoify. This greatly improves usability for users in Europe and other locales!
+
+---

@@ -1,0 +1,39 @@
+````markdown name=CHANGELOG.md
+# Mycoify v0.1.05 – Patch Notes
+
+## ✨ New Feature: Summary/Info Panel for Every Tab!
+
+### 🧾 Contextual Tab Summary Panel
+- A new **summary panel** appears at the bottom of every main tab (Inventory, Runs, Colonizing, Fruiting, Mushrooms, Offloads).
+- **Shows key information relevant to the current tab**:
+  - **Inventory:** Lists all supplies, quantity, and unit cost.
+  - **Production Runs:** Lists recent runs with output and cost.
+  - **Colonizing:** Lists all colonizing tubs, species, inoculation, and outtake dates.
+  - **Fruiting:** Lists all fruiting tubs with species and start dates.
+  - **Mushrooms:** Shows current mushroom stock and value.
+  - **Offloads:** Shows recent offloads/sales.
+- **Auto-updates** whenever you switch tabs or change data.
+
+### 🖥️ UI/UX Enhancements
+- Summary panel styled with matching dark theme; easy to read and automatically hidden when not needed.
+- All summary panels use simple but information-rich bullet lists for quick reference.
+- Existing modal, menu, and tab logic are retained.
+
+### 🛠️ Everything Else (Retained from v0.0.04+)
+- Full tub flush/dump log in Fruiting (modal)
+- Soft delete for all major entities, with full history in export/import
+- Mobile-friendly, responsive design
+- TXT import/export with flush logs, harvest logs, and soft delete status
+- All decimal/comma input flexibility, local storage, notifications, etc.
+
+## 📝 Known Limitations
+- No "undelete" feature yet (restoration is by re-adding or import edit)
+- No cloud sync/multi-user
+- TXT import expects correct format
+
+---
+
+**Upgrade Note:**  
+You now get a fast, always-visible overview of your most important lab data right in each tab—no more clicking around for summaries!
+
+---

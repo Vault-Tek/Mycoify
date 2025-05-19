@@ -1,0 +1,44 @@
+# Mycoify v0.0.03 – Patch Notes
+
+## 🆕 New Features & Improvements
+
+### Inventory Supplies – Units Support!
+- **Unit field added for each supply item** (e.g., "bag", "ml", "lb", etc.).
+  - Input form now includes a "Unit" field.
+  - Supplies table displays the unit for each supply item.
+  - Unit is required for all supplies—prevents saving supplies without specifying a unit.
+  - When updating a supply, the unit is also updated.
+
+### Smarter Production Run Logging
+- **Supply usage prompt now shows units** for each supply (e.g., "Peat moss (bag), Water (ml)").
+- **Production Run table** now displays units next to supply amounts used (e.g., "Peat moss: 2 bag, Water: 500 ml").
+- All supply usage, deduction, and display logic now tracks units for clarity.
+
+### Polished Input Validation
+- Prevents adding supply entries without a unit, or with invalid values.
+- All forms now require units for supply items.
+
+## 📝 Display & Usability Tweaks
+
+- Supplies table: now includes a “Unit” column for quick reference.
+- Production Runs: supply usage column includes both quantity and unit for each item.
+- No changes to existing mushroom harvest, offload, export/import, or dashboard logic.
+
+## 🛠️ Everything Else (Retained from 0.0.02)
+- Inventory add/update/delete with per-unit cost and total cost calculations.
+- Production run logging (mushroom production still optional per run).
+- Mushroom stock/harvest management and stock valuation.
+- Offload/sell feature with profit calculation.
+- Local storage persistence, import/export, dark-themed responsive UI, and notifications.
+
+## 📝 Known Limitations (Unchanged)
+- Deleting a run does not restore supply counts.
+- No cloud sync or multi-user support.
+- Basic profit/expense analytics only.
+
+---
+
+**Upgrade Note:**  
+Supplies from previous versions will not have a "unit" field—please edit existing supplies and add their correct units for proper display and calculations.
+
+---

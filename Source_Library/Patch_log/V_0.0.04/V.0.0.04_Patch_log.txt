@@ -1,0 +1,46 @@
+# Mycoify v0.0.04 – Patch Notes
+
+## 🆕 New Features & Improvements
+
+### Inventory Management: Smarter Supply Updates
+- **"Quantity to Add" for Supplies:**  
+  - When adding a supply that already exists (same name and unit), the entered quantity is now **added** to the existing stock (previously, it replaced the quantity).
+  - Form hint clarifies this behavior:  
+    > "If supply exists, quantity will be increased. Units and cost will be updated."
+  - Units and cost per unit are always updated to the latest entered value.
+
+### Inventory Form & Table
+- Inventory input form changes:
+  - "Quantity" field label changed to "Quantity to Add" for clarity.
+  - Helper text added beneath the form for user guidance.
+- Supplies table, supply merging, and update logic all now respect this additive behavior.
+
+### Under-the-Hood Logic Updates
+- The "addSupply" function now:
+  - Finds supplies by both **name and unit** (case-insensitive).
+  - Increases quantity when a match is found, rather than replacing it.
+  - Updates unit and cost to the latest input, even when merging.
+- Cleaner, more robust supply management for recurring or bulk additions.
+
+### UI/UX Polish
+- Mushroom tab market price row made more visually prominent and aligned for clarity.
+- All other features and table displays remain consistent.
+
+## 🛠️ Everything Else (Retained from 0.0.03)
+- Add/update/delete inventory items with per-unit cost
+- Run logging with per-supply usage (with units), cost deduction, and optional mushroom production
+- Mushroom stock and valuation
+- Offload/sell with profit calculation
+- Local storage, import/export, responsive UI, real-time notifications
+
+## 📝 Known Limitations (Unchanged)
+- Deleting a supply or production run does not restore stock or inventory
+- No multi-user/cloud features
+- Only basic profit/expense analytics
+
+---
+
+**Upgrade Note:**  
+Existing supplies from earlier versions will merge by name and unit when updating—be sure to check units for consistency!
+
+---

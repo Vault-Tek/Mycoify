@@ -1,0 +1,62 @@
+````markdown name=CHANGELOG.md
+# Mycoify v0.0.04 – Patch Notes
+
+## 🚀 Major Feature: Full Tub Flush Logging & Dumping
+
+### 🍄 Fruiting Tab Now Supports Detailed Flush Tracking!
+- **Log multiple flushes per tub:**  
+  - Each fruiting tub now has a "Log Fruit / Flush" button.
+  - Opens a **modal dialog** where you can:
+    - Specify flush number (text, no arrows, default 1 or next in sequence)
+    - Enter flush date (defaults to today)
+    - Enter harvested grams
+    - View full flush history for the tub
+    - **Log a "dump"** (failed/contaminated tub) with a single click; this records the dump and removes the tub from active tracking.
+- **Flushes are recorded per tub** and displayed as a history in the modal.
+- **Tub dumping** moves the tub to a "harvested/removed" log with status "Dumped".
+
+### 🗄️ Audit & Soft Delete for All Major Entities
+- **Soft delete for:**  
+  - Supplies
+  - Production runs
+  - Colonizing tubs
+  - Fruiting tubs
+  - Offloads
+- Deleted items are hidden from the main UI but preserved in TXT export/import as `| DELETED`.
+- Supplies and runs can be "restored" (if re-added with the same name/unit, they reappear).
+
+### 📦 TXT Export/Import Upgrades
+- **Export now includes:**  
+  - All deleted records (with `| DELETED`)
+  - Flush logs:  
+    - `tubId | flushNum | date | grams`
+    - `tubId | DUMPED | date` for dumped tubs
+  - "HARVESTED TUBS" section (harvested or dumped, with status)
+- **Import restores:**  
+  - All records, deleted status, flush logs, and tub history.
+
+### 🧑‍🔬 Usability & Workflow
+- Flush logging, dump, and modal UI for fruiting tab
+- Tub ID auto-suggestion works after deletes/dumps
+- Soft delete for all entities, with full history in export/import
+- Modal can be dismissed by clicking outside or Escape key
+
+### 🖥️ UI/UX
+- All flush/dump actions are via modal, not prompt
+- All forms remain mobile-friendly
+- No accidental data loss due to delete—everything is recoverable in export
+
+## 🛠️ Everything Else (Retained from 0.1.x)
+- Decimal/comma input, local storage, notifications, inventory/runs/harvest/offload, colonizing/fruition workflows
+
+## 📝 Known Limitations
+- No "undelete" UI (restoration is by re-adding, or via manual file edit/import)
+- No cloud sync/multi-user
+- TXT import expects correct format
+
+---
+
+**Upgrade Note:**  
+You can now keep a full, auditable flush and tub removal log—essential for serious lab record keeping!
+
+---

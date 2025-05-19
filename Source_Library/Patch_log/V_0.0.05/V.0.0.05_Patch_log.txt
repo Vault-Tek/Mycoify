@@ -1,0 +1,47 @@
+# Mycoify v0.0.05 – Patch Notes
+
+## ✨ Major New Feature: Interactive Supply Usage Table for Production Runs
+
+### Production Runs – Modernized Supply Selection!
+- **GUI table for supply usage:**  
+  - When adding a new production run, users now see a table listing all supplies in stock, their available quantity, unit, and an input field to specify how much to use for that run.
+  - No more usage prompts or manual comma-separated entry—just enter the amount for each supply directly and visually!
+
+- **Validations & User Guidance:**
+  - Input for each supply cannot exceed what is in stock.
+  - Negative numbers are prevented.
+  - If any supply usage exceeds available stock, a clear error is shown and the run is not added.
+
+- **Automatic Table Updates:**
+  - The supply usage table in the run form updates live when supplies are added, updated, or deleted.
+  - This ensures users always interact with accurate inventory values.
+
+### Improved User Experience Across Inventory and Runs
+- Whenever you add, update, or delete supplies, the run supply table refreshes automatically.
+- After importing data, the table also refreshes for consistency.
+
+### Under-the-Hood & UI Adjustments
+- Cleaner, more robust code:  
+  - Run supply usage is now an array based on the visual table inputs.
+  - Table and form rendering is modular for easy maintenance.
+- Visual tweaks:  
+  - Supply usage inputs have a distinct background and style for clarity.
+
+## 🛠️ Everything Else (Retained from 0.0.04)
+- Inventory add/update/delete (merges by name/unit, adds quantity, updates cost/unit)
+- Production run logging (with per-supply usage, units, and cost deduction)
+- Mushroom stock management, harvest logging, and valuation
+- Offload/sell with profit calculation
+- Local storage, import/export, responsive UI, notifications
+
+## 📝 Known Limitations (Unchanged)
+- Deleting a run or supply does not restore inventory or stock
+- No multi-user/cloud features
+- Basic analytics only
+
+---
+
+**Upgrade Note:**  
+This release streamlines the production run workflow—no more prompts, just direct supply usage entry for fast, error-free logging!
+
+---

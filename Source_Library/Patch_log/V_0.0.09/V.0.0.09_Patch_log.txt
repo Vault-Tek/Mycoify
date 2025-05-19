@@ -1,0 +1,38 @@
+# Mycoify v0.0.09 – Patch Notes
+
+## ✨ Improvements & Fixes
+
+### 🔢 Improved Supply Unit Cost Input (Decimal/Comma Support)
+- **Supply cost input now accepts both periods and commas as decimal separators** (e.g., `12,5` or `12.5` both work).  
+  - This makes the app friendlier for international users and anyone who prefers a comma as a decimal separator.
+  - The input is now text-based (`inputmode="decimal"`, pattern for decimals) for better mobile compatibility and to eliminate accidental up/down arrows.
+
+### 🧪 Inventory Add/Update
+- When entering supply unit cost, any commas are automatically converted to periods, ensuring correct numeric parsing.
+- All other validations remain in place: quantity must be positive, cost non-negative, and unit required.
+
+### 🧑‍🔬 No Change to Export/Import, UI, or Data Model
+- TXT export and import, production run logic, offload, and dashboard all continue to work as before.
+- All case-insensitivity and "ml" (bulk price) logic is retained.
+- "ml" hint, UI, and all prior logic unchanged except for accepting comma/period for prices.
+
+### 🛠️ Technical Details
+- The supply input cost string is parsed with `replace(",", ".")` before conversion to number.
+- This ensures robust and predictable handling for users regardless of locale.
+
+## 🛠️ Everything Else (Retained from v0.0.08)
+- Case-insensitive supply matching and import.
+- Bulk pricing for "ml" unit, hint, and division logic.
+- Human-readable TXT export/import, interactive supply/run tables, harvest/offload, dashboard, notifications.
+
+## 📝 Known Limitations (Unchanged)
+- Deleting a run or supply does not restore inventory/stock.
+- No cloud/multi-user features.
+- TXT import expects correct format—edit with care!
+
+---
+
+**Upgrade Note:**  
+You can now use commas or periods for supply prices (e.g., `25,00` = `25.00`). For best results, always check your data after import/export!
+
+---

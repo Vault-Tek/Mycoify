@@ -1,0 +1,56 @@
+# Mycoify v0.0.01 – Initial Release
+
+Welcome to the first release of **Mycoify**: a mycology lab spreadsheet and management tool for browser use.
+
+## 🎉 Features Included
+
+### Dashboard Overview
+- Summary cards showing:
+  - Total supplies in inventory
+  - Total mushroom stock (grams and estimated value)
+  - Total expenses
+  - Calculated profit
+
+### Tabbed Sections
+- **Inventory**
+  - Add, update, and delete supply items (name, quantity, unit cost)
+  - Automatic calculation of total cost per supply
+  - Inventory table
+- **Production Runs**
+  - Log each production run (name & grams produced)
+  - Prompt to enter supply usage per run (per-supply, custom amounts)
+  - Deducts used supplies from inventory
+  - Tracks cost per run and total expenses
+  - Delete individual runs
+- **Mushroom Stock**
+  - Add manual harvests to mushroom stock
+  - Displays current stock in grams and estimated market value
+  - Adjustable market price for stock valuation
+- **Offload Product**
+  - Log product sold/offloaded (by grams)
+  - Calculates and adds income based on adjustable market price
+  - Updates mushroom stock and profit
+  - Displays recent offloads
+
+### Data Persistence & Utility
+- All data stored in browser localStorage (auto-loads on refresh)
+- Data export: download all data as JSON
+- Data import: upload JSON file to restore or transfer data
+- Responsive, card-based UI with dark theme (Tailwind + custom styling)
+- Fast notifications for all user actions/errors
+
+### UX & Controls
+- Tab navigation with active/inactive button states
+- Real-time dashboard and UI updates after each action
+- Input validation and error handling with user feedback
+
+## 🛠️ Known Limitations
+- No user authentication or multi-user support
+- Supply restoration after deleting production runs is not implemented
+- No advanced analytics or reporting (basic profit/expense only)
+- No cloud sync (data is local to the browser)
+- No mobile optimization yet, but responsive layout
+
+---
+
+Thanks for trying Mycoify! This is just the beginning—future versions will expand features and improve usability. Please back up your data regularly using the export function.
