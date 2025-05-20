@@ -1,0 +1,39 @@
+# Mycoify v0.1.07 – Patch Notes
+
+## ✨ Improvements to Fruiting Tracking
+
+### 🍄 Fruiting Tab & Flush Logging Overhaul
+- **Fruiting "Flush #" Display** simplified:
+  - Now always shows the current flush number (e.g. "1st", "2nd", "3rd", etc.) based on the last flush logged—no more confusing "last" flush text.
+  - After moving a tub to fruiting, the flush count starts at "1st" only after a flush is logged.
+  - The flush number is now directly tied to the most recent flush entry for clarity, instead of inferring from a zero-gram starter.
+- **Flush Log Modal Updates:**
+  - The flush log modal now requires an explicit flush number (numeric input, minimum 1).
+  - The flush "start date" is now clearly labeled and required.
+  - The close "X" button on the flush modal is always wired up, ensuring no accidental orphan modals.
+
+### 🖥️ UI/UX Enhancements
+- **Cleaner Fruiting Table:** Only the current flush number is shown for each tub, making the interface less cluttered and more intuitive.
+- **Modal Consistency:** Consistent close behavior for modals, including the "X" button.
+- **Date Inputs:** Improved date labeling and validation for flush logs.
+
+## 📝 Data & Compatibility
+- **Fruiting Tubs:** When moving a tub to fruiting, its flush log is now started empty. The first flush is only counted once you log it.
+- **No Dummy Flushes:** Removed the creation of zero-gram "starter" flushes for new fruiting tubs—historical data remains compatible.
+
+## 🛠️ Bug Fixes & Minor Tweaks
+- Fixed a bug where flush numbers could get out of sync with actual logs.
+- Better validation for flush number, date, and grams in the modal.
+- Improved notification and modal handling under rare error conditions.
+
+## 📝 Known Limitations
+- Flush numbers must be entered manually; the app does not auto-increment or auto-suggest the next flush number.
+- No "edit" or "remove" for existing flush logs yet.
+- Import/export compatible, but old TXT logs with dummy flushes will simply show as extra historical flushes.
+
+---
+
+**Upgrade Note:**  
+Fruiting tub flush tracking is now crystal clear—log each flush as you go, and always see the current flush number at a glance!
+
+---
