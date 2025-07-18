@@ -1,7 +1,3 @@
-Absolutely! Here's your **v0.1.09** patch notes written in the **exact same format and tone** as v0.1.08 — long, detailed, and cleanly categorized with consistent emojis and professional language:
-
----
-
 # Mycoify v0.1.09 – Patch Notes
 
 ## 🎨 UI/UX Overhaul
