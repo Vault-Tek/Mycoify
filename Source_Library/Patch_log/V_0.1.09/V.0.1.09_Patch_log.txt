@@ -1,56 +1,84 @@
-# Mycoify Patch Notes – 2025-07-18
-
-## Summary of Today's Modifications
-
-### 1. Hamburger Menu & Navigation
-- **Improved Hamburger Menu:**  
-  The hamburger ("☰") button now hides when the menu is open and shows again when closed, preventing duplicate toggles and providing a cleaner experience.
-  Previously we experienced a bug where the hamburger menu would persist, and block import/export data on the side when attempting to access the menu.
-
-### 2. Import/Export: Reliable Session Continuity
-- **Export:**  
-  All lab session data (supplies, runs, colonizing, fruiting, mushrooms, offloads, flushes, etc.) is exported to a `.txt` file in a human-readable format.
-- **Import:**  
-  The import feature is now fully implemented. Uploading a previously exported file restores the entire lab state, including recalculating expenses, profit, income, and mushroom stock. No placeholder code remains.
-  We has this implemented before, but our development team ran into some issues regarding 
-
-### 3. Offload Sale Tracking Improvements
-- **Cost Per Sale:**  
-  Offload (product sale) logs now include both sale quantity and total price, and these are shown in the offloads tab and persisted across export/import.
-- **Profit/Income Calculations:**  
-  Profit and income statistics on the dashboard now update automatically as sales are logged or imported.
-
-### 4. UI/UX Enhancements
-- **Button Styles:**  
-  Buttons have been redesigned for improved visibility and usability, with clearer visual feedback and modern color schemes.
-- **Layout Polish:**  
-  The dashboard and tab layouts were cleaned up for clarity and mobile friendliness.
-- **Tab Navigation:**  
-  Navigation between Inventory, Runs, Colonizing, Fruiting, Mushrooms, and Offloads is now more visually distinct.
-- **Input Hints:**  
-  Added a hint for "ml" unit entries to avoid confusion about price per unit.
-
-### 5. Data Model & Table Enhancements
-- **Flush History:**  
-  Flushes for each tub are now shown in a modal dialog, making it easier to log harvests and dumps.
-- **Harvested Tubs List:**  
-  Tubs that are dumped are tracked and included in export/import.
-- **All CRUD Logic:**  
-  Create, update, and delete actions for all entities (supplies, runs, tubs, sales) remain reliable and are fully restored on import.
-
-### 6. Whole File Delivery
-- The final product is delivered as a single, ready-to-use HTML file—no code is omitted or referenced externally.
-- You can copy, paste, and rename the file as `mycoify.html` and it will work out of the box.
+Absolutely! Here's your **v0.1.09** patch notes written in the **exact same format and tone** as v0.1.08 — long, detailed, and cleanly categorized with consistent emojis and professional language:
 
 ---
 
-## Collaboration Milestones
+# Mycoify v0.1.09 – Patch Notes
 
-- **Clarified and fixed hamburger menu logic.**
-- **Added, debugged, and refined full import/export functionality.**
-- **Ensured that offload sales (quantity and price) are tracked, visible, and persistent.**
-- **Improved UI and button design for a modern user experience.**
-- **Carefully preserved all original features and logic, with no regressions or removals.**
-- **Delivered a complete, one-file solution for instant user testing and use.**
+## 🎨 UI/UX Overhaul
+
+### 🎨 Full Theme & Interface Redesign
+
+* **Complete visual overhaul across the application:**
+
+  * Introduced a fully redesigned theme to modernize the app’s look and feel, using a cleaner, professional style with more refined spacing, shadows, and color schemes.
+  * Rebuilt all primary components and containers for better alignment, consistency, and readability.
+  * Updated card structures, tab styling, and section headers to follow a more elegant and legible format.
+  * This redesign significantly improves usability across devices while preparing the interface for future mobile integration.
+
+### 🔘 Button System Revamp
+
+* **Standardized and restyled all buttons throughout the interface:**
+
+  * Added visual hierarchy between primary, secondary, and contextual actions.
+  * Introduced smoother hover transitions, modernized color palettes, and consistent corner rounding.
+  * Enhanced button visibility in both light and dark areas of the interface, improving accessibility and user confidence in interactions.
+
+---
+
+## 📊 Features & Functionality
+
+### 💰 New: Cost Per Sale Tracking
+
+* **Added dynamic "Cost Per Sale" calculation support:**
+
+  * Users can now assign cost data to each offload or batch, giving them insight into profitability per sale or harvest.
+  * This includes tracking substrate, material, and labor cost inputs (where available) for each production run.
+  * Results are presented directly in the offload tracking section, supporting better financial decision-making and lab planning.
+
+---
+
+## 🗃️ Storage & Architecture Improvements
+
+### 📦 Migration to `userLocal` Storage Schema
+
+* **Overhauled data storage model:**
+
+  * Transitioned away from generic local device storage to a structured `userLocal` format for more granular control over user-specific data.
+  * Prepares the application for authenticated multi-user profiles and data syncing in the future.
+  * Also helps isolate and persist session data across tabs or devices (where supported) with fewer collisions or state resets.
+
+### 📱 Foundations for Mobile Functionality
+
+* **Began groundwork for mobile support:**
+
+  * Refactored layout containers and component responsiveness to adapt fluidly on small and medium screens.
+  * Introduced dynamic viewport breakpoints and scalable element sizing to ensure consistent usability on tablets and smartphones.
+  * Although full mobile support is still in progress, this patch introduces the foundational logic necessary to bring Mycoify to a mobile-first workflow.
+
+---
+
+## 🛠️ Fixes & Stability Enhancements
+
+### 🧭 Side Menu Behavior Fixed
+
+* **Resolved persistent issues with side menu functionality:**
+
+  * Fixed erratic collapsing/expanding states on different screen sizes.
+  * Resolved overlap and click-layer bugs that caused some UI elements to appear behind or inside the menu on interaction.
+  * Improved responsiveness and animation timing for a smoother and more intuitive sidebar experience.
+
+### 🗃️ Import/Export Bug Resolved
+
+* **Fixed export/import failure for select users:**
+
+  * Addressed a critical bug where the import/export functions silently failed under certain browser conditions (especially when storage was in a malformed state).
+  * Rebuilt internal handlers to ensure consistent formatting, proper encoding, and fail-safe operations during data export and import events.
+  * Now supports wider compatibility across Chromium-based and mobile browsers.
+
+---
+
+**Upgrade Note:**
+
+This version introduces Mycoify's biggest visual upgrade yet, alongside improved financial tracking via cost-per-sale, a more stable storage model with future-user support in mind, and key fixes for menu bugs and data handling issues. Prepare for mobile features and richer analytics coming soon.
 
 ---
