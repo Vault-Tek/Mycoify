@@ -1,0 +1,47 @@
+Gotcha! Here’s your **v0.1.08** patch notes in exactly the same detailed format and style as your example from v0.1.07, just using your points expanded for clarity:
+
+---
+
+# Mycoify v0.1.08 – Patch Notes
+
+## 🛠️ Backend & Data Handling Improvements
+
+### 🧪 Lab Logging Backend Update
+
+* **Backend structure for lab info logging updated:**
+
+  * Reworked the data schema and storage approach for lab information to improve data consistency and prepare for upcoming features.
+  * This change ensures more reliable data capture and easier maintenance going forward.
+
+## 🃏 UI/UX Enhancements & Fixes
+
+### 🃏 Card Header Limit Adjustment
+
+* **Card header length limit increased:**
+
+  * Expanded allowed length for card headers to accommodate longer titles without truncation or layout issues.
+  * Improves readability and reduces UI clutter on cards with descriptive titles.
+
+### 🖱️ Scrollable Cards Logic Fix
+
+* **Fixed logic for applicable scrollable cards:**
+
+  * Corrected which cards are designated scrollable, ensuring consistent behavior across different views and preventing unexpected scrolling glitches.
+
+## 🗑️ Bug Fixes
+
+### 🗑️ Delete Button Fix
+
+* **Delete button functionality fixed:**
+
+  * Addressed persistent issues that prevented proper deletion of entries.
+  * Now, users can reliably remove items with no errors or UI hangups.
+
+---
+
+**Upgrade Note:**
+This update improves backend lab logging reliability, enhances card header display, fixes scrolling behavior, and finally resolves the delete button bug for a smoother overall experience.
+
+---
+
+
