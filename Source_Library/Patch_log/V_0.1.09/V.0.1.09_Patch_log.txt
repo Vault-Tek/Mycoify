@@ -1,37 +1,56 @@
 # Mycoify Patch Notes – 2025-07-18
 
-## Changes and Additions
+## Summary of Today's Modifications
 
-### 1. Hamburger Menu Behavior Improved
-- **Feature:** The hamburger menu button is now hidden whenever the side menu is open, and reappears when the menu is closed.
-- **Benefit:** Prevents double menu open/close situations and provides a cleaner interface.
+### 1. Hamburger Menu & Navigation
+- **Improved Hamburger Menu:**  
+  The hamburger ("☰") button now hides when the menu is open and shows again when closed, preventing duplicate toggles and providing a cleaner experience.
+  Previously we experienced a bug where the hamburger menu would persist, and block import/export data on the side when attempting to access the menu.
 
-### 2. Full Import/Export Functionality
-- **Feature:** Export saves the entire lab session (supplies, runs, colonizing, fruiting, mushrooms, offloads, flushes, etc.) to a plain text file.
-- **Feature:** Import now fully restores all lab data from a previously exported file, matching the exported format exactly.
-- **Benefit:** You can export your session, close the app, and later import the file to continue your lab work seamlessly.
+### 2. Import/Export: Reliable Session Continuity
+- **Export:**  
+  All lab session data (supplies, runs, colonizing, fruiting, mushrooms, offloads, flushes, etc.) is exported to a `.txt` file in a human-readable format.
+- **Import:**  
+  The import feature is now fully implemented. Uploading a previously exported file restores the entire lab state, including recalculating expenses, profit, income, and mushroom stock. No placeholder code remains.
+  We has this implemented before, but our development team ran into some issues regarding 
 
-### 3. UI and Data Model Integrity
-- **Assurance:** No features or tabs were removed or broken during the update.
-- **Assurance:** All tabs—Inventory, Production Runs, Colonizing, Fruiting, Mushroom Stock, and Offloads—remain fully functional.
-- **Assurance:** All CRUD logic (add, update, delete) remains unchanged except for explicit improvements above.
+### 3. Offload Sale Tracking Improvements
+- **Cost Per Sale:**  
+  Offload (product sale) logs now include both sale quantity and total price, and these are shown in the offloads tab and persisted across export/import.
+- **Profit/Income Calculations:**  
+  Profit and income statistics on the dashboard now update automatically as sales are logged or imported.
 
-### 4. Data Tracking and Logging
-- **Feature:** Offloads (sales) are logged with quantity, price, and date, and preserved across export/import.
-- **Feature:** Expenses, income, flush history, and mushroom stock are recalculated and restored correctly on import.
+### 4. UI/UX Enhancements
+- **Button Styles:**  
+  Buttons have been redesigned for improved visibility and usability, with clearer visual feedback and modern color schemes.
+- **Layout Polish:**  
+  The dashboard and tab layouts were cleaned up for clarity and mobile friendliness.
+- **Tab Navigation:**  
+  Navigation between Inventory, Runs, Colonizing, Fruiting, Mushrooms, and Offloads is now more visually distinct.
+- **Input Hints:**  
+  Added a hint for "ml" unit entries to avoid confusion about price per unit.
 
-### 5. Patch Packaging
-- **Delivery:** The final code is provided as a single HTML file. No placeholder comments for missing code—everything required to run the app is present in the file.
-- **Instruction:** You can copy-paste the entire file into a blank `.html` file and use it immediately.
+### 5. Data Model & Table Enhancements
+- **Flush History:**  
+  Flushes for each tub are now shown in a modal dialog, making it easier to log harvests and dumps.
+- **Harvested Tubs List:**  
+  Tubs that are dumped are tracked and included in export/import.
+- **All CRUD Logic:**  
+  Create, update, and delete actions for all entities (supplies, runs, tubs, sales) remain reliable and are fully restored on import.
+
+### 6. Whole File Delivery
+- The final product is delivered as a single, ready-to-use HTML file—no code is omitted or referenced externally.
+- You can copy, paste, and rename the file as `mycoify.html` and it will work out of the box.
 
 ---
 
-## Summary
+## Collaboration Milestones
 
-**You can now fully export and import your entire lab session without losing any data or features.  
-The menu is cleaner and more robust, and all record-keeping is reliable and restorable.**
+- **Clarified and fixed hamburger menu logic.**
+- **Added, debugged, and refined full import/export functionality.**
+- **Ensured that offload sales (quantity and price) are tracked, visible, and persistent.**
+- **Improved UI and button design for a modern user experience.**
+- **Carefully preserved all original features and logic, with no regressions or removals.**
+- **Delivered a complete, one-file solution for instant user testing and use.**
 
 ---
-
-**Release Date:** 2025-07-18  
-**Released by:** anomycology-web  
