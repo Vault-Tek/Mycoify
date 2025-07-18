@@ -1,0 +1,37 @@
+# Mycoify Patch Notes – 2025-07-18
+
+## Changes and Additions
+
+### 1. Hamburger Menu Behavior Improved
+- **Feature:** The hamburger menu button is now hidden whenever the side menu is open, and reappears when the menu is closed.
+- **Benefit:** Prevents double menu open/close situations and provides a cleaner interface.
+
+### 2. Full Import/Export Functionality
+- **Feature:** Export saves the entire lab session (supplies, runs, colonizing, fruiting, mushrooms, offloads, flushes, etc.) to a plain text file.
+- **Feature:** Import now fully restores all lab data from a previously exported file, matching the exported format exactly.
+- **Benefit:** You can export your session, close the app, and later import the file to continue your lab work seamlessly.
+
+### 3. UI and Data Model Integrity
+- **Assurance:** No features or tabs were removed or broken during the update.
+- **Assurance:** All tabs—Inventory, Production Runs, Colonizing, Fruiting, Mushroom Stock, and Offloads—remain fully functional.
+- **Assurance:** All CRUD logic (add, update, delete) remains unchanged except for explicit improvements above.
+
+### 4. Data Tracking and Logging
+- **Feature:** Offloads (sales) are logged with quantity, price, and date, and preserved across export/import.
+- **Feature:** Expenses, income, flush history, and mushroom stock are recalculated and restored correctly on import.
+
+### 5. Patch Packaging
+- **Delivery:** The final code is provided as a single HTML file. No placeholder comments for missing code—everything required to run the app is present in the file.
+- **Instruction:** You can copy-paste the entire file into a blank `.html` file and use it immediately.
+
+---
+
+## Summary
+
+**You can now fully export and import your entire lab session without losing any data or features.  
+The menu is cleaner and more robust, and all record-keeping is reliable and restorable.**
+
+---
+
+**Release Date:** 2025-07-18  
+**Released by:** anomycology-web  
