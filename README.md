@@ -1,8 +1,8 @@
-# Mycoify Lab Spreadsheet (V.0.1.09)
+# Mycoify Lab Spreadsheet (V.0.2.00)
 
 Mycoify is a locally hosted mushroom cultivation lab spreadsheet and tracker, designed for privacy, control, and ease of use. It operates entirely on the client-side, ensuring that your sensitive cultivation data never leaves your device. With an intuitive, streamlined interface and smart inventory management, Mycoify empowers growers to efficiently track supplies, production runs, colonizing and fruiting tubs, harvests, and sales—all without the need for an internet connection. Be sure to check out our latest release, and watch for future updates and patches on the [Mycoify Website](https://mycoify.pages.dev/)
 
-![Version](https://img.shields.io/badge/Version-v0.1.09-blue?style=flat-square&logo=github&logoColor=white)
+![Version](https://img.shields.io/badge/Version-v0.2.00-blue?style=flat-square&logo=github&logoColor=white)
 ![Downloads](https://img.shields.io/github/downloads/keeweb/keeweb/total?logo=github&logoColor=white&label=Downloads&color=376892)
 ![Contributors](https://img.shields.io/badge/Contributors-12-blue?style=flat-square&logo=github&logoColor=white)
 
