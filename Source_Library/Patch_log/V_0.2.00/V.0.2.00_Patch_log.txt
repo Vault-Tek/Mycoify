@@ -1,0 +1,115 @@
+# Patch Notes – Mycology Lab Spreadsheet  
+**Date:** 2025-07-21
+
+---
+
+## 1. 🍄 Mushroom Stock Tab: Improved Harvest Entry
+
+- **Grams Enforcement:**  
+  - Changed the harvest input to require values in the format `NNg` or `NN.Ng` (e.g. `22g`, `15.5g`).
+  - If a user enters a value not ending in `g`, the app now displays an error notification.
+- **Harvest Log:**  
+  - Added a list of the 10 most recent harvests to the Mushroom Stock tab, showing grams, source tub (if available), species, and date.
+- **Offload Enforcement:**  
+  - The Offload Product form now also requires product quantities in the format `NNg` or `NN.Ng` (e.g. `10g`).
+  - Prevents offloading more product than is currently in stock.
+
+---
+
+## 2. 🗂️ Side Menu & Navigation: Usability and Layout
+
+- **Stable Release Label:**  
+  - Added a “v0.2.00 Stable Release” label at the bottom of the side menu.
+  - Used `display: flex; flex-direction: column;` for the `.side-menu` container and `margin-top: auto;` for `.side-menu-version` to ensure it is always at the very bottom.
+- **Responsive Menu:**  
+  - The side menu now slides in/out smoothly.
+  - Menu closes automatically when:
+    - A user clicks outside the menu (on the overlay/background).
+    - A user clicks any menu option (including Export/Save, Import/Load).
+  - Overlay (`.side-menu-bg`) is handled via JS and CSS to match menu state.
+- **Hamburger Button:**  
+  - Hamburger icon is always visible when the menu is closed, and hides when menu is open.
+  - Menu is accessible on all screen sizes (mobile and desktop).
+
+---
+
+## 3. 🧾 Dashboard & Data Display
+
+- **Dashboard Cards:**  
+  - Displays Supplies in Inventory, Mushroom Stock (g) and Value, Total Expenses, and Total Profit at the top of the app.
+- **Tabs:**  
+  - Added and improved Inventory, Runs, Colonizing, Fruiting, Mushroom Stock, and Offload Product tabs.
+  - All tab switching is now handled cleanly:
+    - The selected tab highlights.
+    - Switching tabs closes the side menu for a seamless UX.
+
+---
+
+## 4. 📦 Data Import/Export
+
+- **Export:**  
+  - Export now saves a detailed text file with all supplies, runs, colonizing/fruiting tubs, flushes, harvests, offloads, and more.
+- **Import:**  
+  - Import reads this format and restores all application state.
+
+---
+
+## 5. 🚦 Validation, Notifications, and Feedback
+
+- **User Feedback:**  
+  - Added clear notifications for invalid entries (e.g., wrong format for grams, offloading more than available, etc).
+  - Success and error notifications are visually distinct.
+- **Validation:**  
+  - All numeric fields are validated for format and bounds.
+  - Unit cost for `ml` supplies now expects a total price for all ml, and calculates per-ml cost.
+
+---
+
+## 6. 🧪 Fruiting/Colonizing Upgrades
+
+- **Flush Modal:**  
+  - Added a modal for logging flushes for fruting tubs, including flush history and the ability to "dump" a tub.
+- **Fruiting:**  
+  - Move colonized tubs to fruiting with a date and species autofill.
+- **Colonizing:**  
+  - Track species, tub ID, inoc date, and planned outtake date.
+
+---
+
+## 7. 💾 Local Persistence
+
+- **Local Storage:**  
+  - All data (supplies, runs, mushrooms, offloads, tubs, flushes, etc) is saved and loaded from browser local storage.
+
+---
+
+## 8. 🏷️ Miscellaneous UI/UX
+
+- **Styling:**  
+  - Consistent dark theme with Tailwind and custom CSS.
+  - Modern, rounded cards and input fields.
+- **Accessibility:**  
+  - Button labels and ARIA attributes for navigation and modals.
+
+---
+
+## 9. 🛠️ Bug Fixes
+
+- **Menu Overlay:**  
+  - Fixed overlay click not closing the menu, by correcting event listeners to detect background clicks only.
+- **Tab Switch Handling:**  
+  - Switching tabs via menu always closes the side menu.
+- **Harvest/Offload Edge Cases:**  
+  - Prevented negative or invalid stock/offload entries.
+  - Ensured notifications appear for all invalid actions.
+
+---
+
+**Release:**  
+**v0.2.00 Stable Release**
+
+---
+
+**Summary:**  
+This patch delivers a robust, user-friendly mushroom lab spreadsheet with improved UI, validation, persistence, and a polished side menu.  
+All new features and bug fixes are fully detailed above.
