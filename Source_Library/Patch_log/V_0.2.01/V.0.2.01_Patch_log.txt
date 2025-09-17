@@ -1,0 +1,82 @@
+---
+
+# Patch Notes – Mycology Lab Spreadsheet
+
+**Date:** 2025-09-17
+
+---
+
+## 1. 🎨 Visual Overhaul & Theming
+
+* **Liquid Light OS Theme:**
+
+  * Introduced a new **Liquid Light OS-inspired look** across the app.
+  * Added smooth hover effects to cards, buttons, and input fields for a more dynamic interface.
+  * Refined spacing, shadows, and rounded elements to improve readability and modern appeal.
+
+* **Unified Styling:**
+
+  * Adjusted color palette and typography for consistent presentation across all tabs and modals.
+  * Updated dark/light blending for better contrast and accessibility.
+
+---
+
+## 2. 📋 Input System Redesign
+
+* **Modernized Inputs:**
+
+  * Rebuilt all input components with a simplified, consistent design.
+  * Improved focus/hover states to make data entry more intuitive.
+  * Prepared input logic for expanded validation in upcoming releases.
+
+* **Interaction Flow:**
+
+  * Input fields and buttons now interact more fluidly with dashboard cards, providing immediate feedback.
+
+---
+
+## 3. 🔄 Card Interaction Enhancements
+
+* **Rewired Card Logic:**
+
+  * Changed how dashboard and tab cards communicate with each other for smoother data flow.
+  * Cards now adapt dynamically to updated entries, reducing the need for manual refresh or re-entry.
+
+* **Future-Proofed Structure:**
+
+  * System rewiring enables support for upcoming features (to be unveiled in the next release).
+
+---
+
+## 4. 🍄 Harvest System Foundation Updates
+
+* **Harvest Logic Rework:**
+
+  * Began restructuring harvest entry and tracking to align with the new input and card systems.
+  * Legacy functions updated to match the simplified, modernized framework.
+  * These foundational changes prepare the way for the next major release, where the updated harvest workflow will be fully revealed.
+
+---
+
+## 5. 🛠️ Miscellaneous & Under-the-Hood Changes
+
+* **Feature Preparation:**
+
+  * Reorganized codebase to support scalable functions for future modules.
+  * Updated internal architecture for consistency across colonizing, fruiting, and offload processes.
+
+* **Performance:**
+
+  * Minor optimizations in UI responsiveness and event handling.
+
+---
+
+**Release:**
+**v0.2.01 Visual Overhaul Update**
+
+---
+
+**Summary:**
+This patch delivers a complete **visual refresh**, introducing the Liquid Light OS theme, modernized inputs, and improved card interactions. While many updates focus on aesthetics and groundwork, the harvest system has been restructured to pave the way for major functional upgrades in the next release.
+
+---
