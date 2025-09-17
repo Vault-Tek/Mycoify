@@ -1,0 +1,73 @@
+---
+
+# Patch Notes – Mycology Lab Spreadsheet
+
+**Date:** 2025-09-17
+
+---
+
+## 1. 🧬 New “Spawn” Tab
+
+* **Spawn Tracking:**
+
+  * Added a new **Spawn** tab to manage jar entries from the earliest stage.
+  * Users can now log spawn jars with unique **Tag IDs** that automatically increment.
+  * Variant tagging system introduced to distinguish species and sub-strains.
+
+* **Workflow Integration:**
+
+  * Spawn jars serve as the foundation for colonizing and fruiting, creating a streamlined pipeline from inoculation to harvest.
+  * Designed for easy cross-reference with other tabs in future updates.
+
+---
+
+## 2. 🏷️ Variant Tagging System
+
+* **Custom Tags:**
+
+  * Users can create and assign variant tags to spawn jars for better identification.
+  * Tag IDs are automatically generated but can be manually edited if needed.
+
+* **Scalability:**
+
+  * Variant and tag system built to support additional features (e.g., strain-specific analytics, yield tracking) in future versions.
+
+---
+
+## 3. ⚠️ Beta Features & Exceptions
+
+* **Beta Disclaimer:**
+
+  * Some Spawn tab functions are currently in **beta** and may produce minor inconsistencies.
+  * Exceptions have been made to allow flexibility based on user preferences.
+
+* **Known Limitations:**
+
+  * Certain interactions with legacy features may not yet be fully streamlined.
+  * These issues will be patched in upcoming releases as functionality is refined.
+
+---
+
+## 4. 🔄 Future Development Roadmap
+
+* **Legacy Streamlining:**
+
+  * Plans to unify older tab workflows with the new Spawn system.
+  * Future updates will simplify and modernize legacy functions for consistency.
+
+* **Development Team Scaling:**
+
+  * Current beta functionality is sufficient for feature testing and user needs.
+  * Larger development efforts will improve polish, bug resolution, and advanced features in later releases.
+
+---
+
+**Release:**
+**v0.2.02 Spawn System Beta**
+
+---
+
+**Summary:**
+This update introduces the **Spawn tab**, laying the groundwork for full-cycle tracking from inoculation through fruiting. Users can now assign variant tags and jar IDs, with a flexible beta system that may include minor bugs. While not fully streamlined, this release prioritizes functionality and prepares for broader integration in future versions.
+
+---
