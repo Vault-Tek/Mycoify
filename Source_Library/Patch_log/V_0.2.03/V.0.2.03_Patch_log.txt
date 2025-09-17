@@ -1,0 +1,71 @@
+---
+
+# Patch Notes – Mycology Lab Spreadsheet
+
+**Date:** 2025-09-17
+
+---
+
+## 1. 💰 Profit & Expense Tracking
+
+* **Profit Margin Streamlining:**
+
+  * Profit margins now subtract **run product costs** directly from the **Total Profits** box.
+  * Provides a more accurate representation of net profit after production expenses.
+
+* **Reintroduced Expenses Tab:**
+
+  * Restored the **Total Expenses** card on the dashboard.
+  * Users can now view a direct breakdown of costs alongside profit tracking for full financial clarity.
+
+---
+
+## 2. 🍄 Flush & Dump Tub UI Fixes
+
+* **UI Closure Bug:**
+
+  * Fixed a persistent issue where the **Flush/Dump Tub modal** would not close after logging entries.
+
+* **Harvest-on-Dump Bug:**
+
+  * Resolved a bug preventing users from logging harvest amounts when dumping tubs.
+  * Logging is now streamlined and accurately updates stock values.
+
+* **Harvest Feature Removal:**
+
+  * The old **Harvest tab/feature** has been removed.
+  * All harvest actions are now integrated directly into the **Flush/Dump UI**, simplifying workflow and reducing redundancy.
+
+---
+
+## 3. ⚡ Performance & Browser Compatibility
+
+* **Optimizations:**
+
+  * Improved responsiveness and reduced lag when handling larger data sets.
+  * Enhanced compatibility across different locally-hosted browsers for smoother usage.
+
+---
+
+## 4. 🔮 Roadmap: Account Management (Coming Soon)
+
+* **User Accounts:**
+
+  * Upcoming version will introduce the ability to **create and log into accounts**.
+  * Accounts will allow lab managers to segment runs, tubs, and inventories by room or user.
+
+* **Analytics & Oversight:**
+
+  * Future management tools will support **multi-room tracking** and analytic dashboards for higher-level oversight.
+
+---
+
+**Release:**
+**v0.2.03 Financial & UI Streamlining Update**
+
+---
+
+**Summary:**
+This release refines financial tracking by directly linking run costs to profit margins and reintroducing the **Total Expenses tab** for better clarity. Major bugs with the Flush/Dump UI have been resolved, while the outdated Harvest feature has been fully replaced by the modernized flush system. Performance improvements ensure smoother use across local browsers, and groundwork has been set for the next update’s **account-based lab management system**.
+
+---
