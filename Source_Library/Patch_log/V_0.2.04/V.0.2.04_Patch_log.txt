@@ -1,0 +1,54 @@
+---
+
+# Patch Notes – Mycology Lab Spreadsheet
+
+**Date:** 2025-09-19
+
+---
+
+## 1. 📥 Import System Fixes
+
+* **Bug Resolutions:**
+
+  * Fixed multiple issues affecting the **data import system**, ensuring smoother integration of external logs and spreadsheets.
+  * Imports now correctly sync with the dashboard without breaking linked calculations.
+
+---
+
+## 2. 🔢 Matrixing Overhaul
+
+* **Performance Optimization:**
+
+  * Rebuilt core **matrixing logic** to improve speed and accuracy in areas previously prone to lag.
+  * Users should experience noticeably faster updates when handling larger run or expense datasets.
+
+---
+
+## 3. 💾 Local Data Storage
+
+* **Storage Expansion:**
+
+  * Local lab data storage has been expanded from default limits to **1GB**.
+  * This allows users to host and archive significantly more **run logs, tub history, and expense records** directly on their machine.
+
+---
+
+## 4. 💰 Financial Export Enhancements
+
+* **Export Reinforcement:**
+
+  * Strengthened the **export system** for financial tracking.
+  * Now provides more reliable outputs of **money spent vs. money gained** from production runs.
+  * Ensures long-term recordkeeping for cost analysis and profit reporting.
+
+---
+
+**Release:**
+**v0.2.04 Import & Storage Optimization Update**
+
+---
+
+**Summary:**
+This update fixes long-standing bugs in the **import system**, delivers a full **matrixing optimization** for improved responsiveness, and greatly expands **local storage capacity** to 1GB for lab data hosting. In addition, the export system has been reinforced to provide more accurate financial tracking of expenses and profits, supporting better oversight of lab operations.
+
+---
